@@ -1,111 +1,53 @@
-# Git protection and automatic mirrors
+# Protection, authority, and recovery
 
-> **Audience: Agent only.** Use this shared contract during setup and update. Explain results to the owner in plain language; do not ask them to run Git commands.
+> **Audience: Agent only.** Shared reference for installation and update. Explain outcomes in ordinary language; the owner need not learn Git commands.
 
-## The simple rule
+## Discover before changing
 
-Each repository has one primary. Agents commit and push only to that primary.
+Inspect approved repository roots, branches, worktrees, remotes, provider roles, private visibility, history, Git operations, and uncommitted work. Redact credential-bearing URLs. Inventory relevant tracked, untracked, ignored, hidden, root-level, and external content. Existing provider names are not proof of primary status or working protection.
 
-A second Git service is optional. When accepted, configure it as an automatic downstream mirror through the primary host's native mirroring, a narrowly scoped primary-host automation, or another owner-approved one-way mechanism. Do not keep a second routine agent push target.
+The standard topology is independent `os/`, `life/`, and each real `biz/<business>/`. The vault root and empty `biz/` container remain plain. Preserve other topology and all unique history; obtain an exact protected conversion plan before using tools that require these boundaries. Do not reset, stash, switch branches, rewrite history, change remotes, or merge divergence merely to pass a check.
 
-GitHub is the public home of Starter.OS and the normal guided private primary for a new owner. Preserve an existing suitable GitLab or other hosted primary when the owner prefers it.
+## Recommend protection early; respect choice
 
-## Step 1: discover the existing topology
+GitHub is the normal guided private primary when no suitable hosted primary exists. Preserve another suitable private host when preferred. Explain that local history helps recover bad edits and a verified hosted copy protects against device loss. A mirror is a further optional layer, not required onboarding work.
 
-Inspect read-only:
+After the setup plan is approved, guide account security and verify the approved private repository destinations before substantial personalization. The owner handles sign-in, multifactor authentication, recovery codes, and secrets privately. Use only approved credential access; never request secret values in chat.
 
-- repository roots and nested-repository boundaries;
-- branches, worktrees, submodules, and uncommitted or untracked work;
-- remotes with credential-bearing parts redacted;
-- default branches and reachable commit identities;
-- hosting providers, repository owners, and visibility where safely verifiable;
-- current primary behavior and any direct dual-push automation;
-- mirror direction, health, and latest matching commit;
-- files not covered by any repository.
+If GitHub is declined, offer an existing host or local Git. If all Git is declined or deferred, a new foundation in an empty location may proceed under that explicit choice. Offer an approved file-backup option and state the remaining limitation once. Do not repeatedly ask, create Git anyway, or call the result fully protected. Record `owner declined`, `deferred`, or `incomplete; device loss not covered` accurately. An update still requires usable recovery; an earlier opt-out does not authorize risking existing work.
 
-Do not infer that a remote named `origin` is truly primary. Determine what the current workflow actually uses. Never expose tokens, embedded credentials, private keys, or secret URLs.
+## One primary and optional mirrors
 
-## Step 2: choose the minimum safe topology
+Each repository has one primary. Agents push only to it, within publication authority. A secondary service is an automatic downstream mirror configured from the primary using an approved mechanism. Do not keep a second routine agent push target. Verify the expected commit on both services before declaring parity. If mirroring cannot be verified, record the exact gap without silently reverting to dual pushes.
 
-Preserve valid existing history. Recommend:
+Create and read back the first local commit as soon as the new scaffold exists; verify the private hosted copy before substantial personalization when protection is accepted. Review visibility and privacy before every first private push. Do not use a public fork as the owner's working system. Finish a real business with its own readable commit, private hosted primary, and recovery record.
 
-- one working repository for `os/`;
-- one working repository for `life/`;
-- one repository for each real `biz/<business>/`;
-- no repository at the vault root or empty `biz/` container;
-- one private hosted primary per repository;
-- zero or more automatic downstream mirrors.
+## One concrete authority boundary
 
-The 2.2 updater and validator require this topology. If an existing owner uses a different topology, preserve the complete current state first. Then plan and approve the conversion before setup or update continues. Until conversion is complete, report the Git topology as unresolved. Never create nested Git repositories accidentally.
+The shared plan names exact locations, repository/account actions, privacy, recovery, material changes, and any cleanup. Approval continues for those unchanged actions. Ask again only for new scope or genuine choices. A request to inspect an update is not permission to apply it. Structural changes, deletion, messages, publication, spending, access changes, and scheduled work need clear authority. Silence is not approval.
 
-Whenever `os/scripts/add-business.rb` creates `biz/<business>/`, finish the same approved workflow by making that exact folder an independent Git repository, creating its first recovery commit, connecting and verifying its private hosted primary, and recording it in `os/recovery.md`. Do not call the business created while it remains only a folder. The empty `biz/` container never becomes a repository.
+## Protect an existing system
 
-If no suitable hosted primary exists, the normal path is to guide the owner through GitHub account security and private repository creation. The owner handles sign-in, multifactor authentication, recovery codes, and secret values privately. The agent handles repository initialization, connection, validation, commit, and push wherever possible.
+Before update writes:
 
-Local-only Git may create a temporary recovery point, but record `incomplete; device loss not covered` and do not call the standard setup complete until a private hosted primary is verified. Offer an independent off-device file backup while the gap remains.
+1. Verify readable recovery commits in the affected independent repositories; stop for divergence, unfinished operations, or unprotected current work.
+2. Verify the private hosted primaries and enabled mirrors at the intended recovery commits, or report unresolved standard-protection requirements before proceeding.
+3. Make a readable local recovery copy outside the working OS for relevant files Git does not cover. Explicitly scope external files and preserve them separately; the updater does not copy external targets through links.
+4. Give update apply a new external `--root-backup` directory, outside both source and target. It becomes the transaction backup, including root entries, before/after bytes for every write, original repository commits, and a complete local inventory excluding Git internals.
+5. Keep all recovery material until validation succeeds and the owner accepts the result. A receipt is recovery data, not a second operational home.
 
-## Step 3: preview consequential actions
+The updater stages and reads back all write bytes and recovery evidence before changing the target. Writes are atomic per file; the entire multi-repository update is not one atomic operation. On interruption, preserve the receipt and use the restore guide in `UPDATE.md`. It refuses to discard later owner changes. Restoration never resets Git history or changes remote services.
 
-Show:
+## Record truthful evidence
 
-- exact repository and local path;
-- existing or proposed primary provider and private visibility;
-- existing or proposed automatic mirrors and direction;
-- history changes, if any;
-- initial or recovery commit scope;
-- files outside Git coverage;
-- credentials or sign-ins the owner must handle privately;
-- validation and rollback route.
+Use owner-owned `os/recovery.md` for each repository's location, primary, expected commit, optional mirror, verification date/state, full-file backup, and last restore proof. Use `verified`, `configured but unverified`, `incomplete; device loss not covered`, `owner declined`, `deferred`, or `unavailable`. A planned backup or successful upload is not a restore test. Local validation does not contact a host, scheduler, or backup service.
 
-Wait for approval before initializing Git, changing remotes, creating repositories, publishing commits, changing visibility, configuring mirrors, or adding automation.
+## Source cleanup after success
 
-## Step 4: create the first working recovery point
+The installed system never keeps the public `setup/` folder. Future updates begin from a fresh approved source.
 
-Before publication or update:
+- Remote-only source: no local cleanup.
+- Temporary checkout/download: remove the exact approved copy only after proving it contains no owner files, secrets, unique commits, or uncommitted work.
+- Intentional maintainer checkout or uncertain pre-existing folder: retain it and state why.
 
-1. confirm the intended files and privacy boundary;
-2. run the owning validator and secret checks;
-3. make sure unique work is tracked or separately protected;
-4. create the approved commit in the working repository;
-5. read back the commit and clean or intentionally dirty state.
-
-Do not call local history a device-loss backup.
-
-## Step 5: connect one primary
-
-Use the provider and account the owner approved. Preserve existing remote names when safe; use `origin` for a new primary by convention.
-
-Never ask the owner to paste a token into chat or store credentials in Starter.OS. Use the provider's normal secure sign-in or an already authorized credential system.
-
-Before the first private push, verify the destination and visibility. Do not use a public fork as the private working repository. Push only the approved branch and read back the primary's commit identity.
-
-## Step 6: convert or add automatic mirrors
-
-If the owner wants a secondary service:
-
-1. compare primary and secondary histories and stop on unexplained divergence;
-2. preserve all unique history;
-3. configure one-way mirroring from the primary using the primary's native feature or narrowly scoped automation;
-4. remove the secondary from routine agent push instructions only after the automatic path is configured;
-5. trigger or wait for the mirror;
-6. verify the secondary default branch reaches the exact primary commit;
-7. record the mechanism without credentials.
-
-If automatic mirroring is unavailable, report `configured but unverified` or `unavailable`. Do not silently restore dual pushes.
-
-## Step 7: verify and record
-
-For each repository, record in `os/recovery.md`:
-
-| Repository | Local path | Primary | Primary commit | Mirror | Mirror commit | Status | Checked |
-|---|---|---|---|---|---|---|---|
-
-Use only:
-
-- `verified`;
-- `configured but unverified`;
-- `incomplete; device loss not covered`;
-- `owner declined`;
-- `unavailable`.
-
-A repository is fully verified only when the local approved commit is readable, the primary reports the same commit, and every enabled mirror reports the same commit. Otherwise name the exact remaining gap.
+Never delete individual setup files, the recovery copy, or the owner's old repository as installer cleanup. Record cleanup as complete, intentionally retained, not applicable, or unresolved.

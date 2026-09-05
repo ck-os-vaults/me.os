@@ -1,69 +1,47 @@
 # Starter.OS
 
-Starter.OS is a free repository brain for a private AI Chief of Staff. It starts empty and works for any owner. Your files hold the lasting information. You can change the AI, app, or computer without rebuilding the system.
+A free foundation for your own second brain and AI Chief of Staff.
+
+Your files hold lasting knowledge, preferences, decisions, and project context. Your chosen agent helps you work with them. You shape the system through use, keep control of your information, and can change models or tools without rebuilding your knowledge.
+
+The current `main` branch contains the **3.1.0 candidate** for owner testing. To try this newest candidate, tell your agent: “Use the current 3.1 candidate on main and guide me through setup.” This selects the version; the agent still reviews your setup plan with you before creating files. Local checks pass, and independent-review findings have been addressed. Real-user and hosted-service acceptance remain in progress.
 
 ## Start with one link
 
-Copy this repository link and paste it into a file-capable agent:
+Give a file-capable agent this repository:
 
 **https://github.com/ck-os-vaults/starter-os-public**
 
-That link is the whole starting prompt when the agent can read repository instructions, work in your private files, use Git, and run the included Ruby checking tools. The instructions help the agent determine whether you need:
+The link is the entire prompt. You can also say:
 
-1. a new private OS; or
-2. an update to an existing Starter.OS installation.
+> Check this out and find the install that fits us best.
 
-If you already have another repository, Starter.OS does not convert it. Your agent creates the new system separately, leaves the old one untouched, and can help you bring over only the context you still want after setup is complete.
+The agent reads `AGENTS.md`, checks what you already have and what your tools can do, then guides a new installation or an update. You do not need to find a setup file, choose a technical architecture, or learn Git commands. If the agent cannot read the instructions or work in your private files, it must explain the missing capability. A fallback is: “Read the root AGENTS.md and guide me through the appropriate route.”
 
-Setup takes you from naming the system through proof that it works. Updates use **Protect → Review → Ask → Improve → Prove** so your work and customizations remain yours. [`setup/START-HERE.md`](setup/START-HERE.md) explains both paths.
+## Your foundation
 
-## What it creates
+- `os/`: operating guidance, preferences, reusable workflows, and recovery.
+- `life/`: personal knowledge, notes, and projects.
+- `biz/`: businesses, created only when you need them.
 
-```text
-name.os/
-├── AGENTS.md
-├── CLAUDE.md
-├── os/       shared rules, the manual, skills, maps, and validation
-├── life/     private personal context, projects, knowledge, and records
-└── biz/      empty until a real business is created
-```
+Your private system takes your chosen name. Setup establishes protection early, adds confirmed preferences, checks the foundation, and explains how to begin. You choose your first task afterward. Projects, example exercises, and automations are not required.
 
-The installed system does not include the public `setup/` folder. Ongoing guidance lives where it belongs, including the protected plain-language manual at `os/manual.md`.
+Private GitHub repositories are the recommended starting protection. An existing suitable host can stay. You can decline or defer; the agent explains what remains unprotected without repeatedly asking. You handle sign-in and secrets privately. The agent handles technical steps within your approval.
 
-The public repository keeps installation routes, release machinery, detailed licenses, and technical scripts together under `setup/`. They support the product but are not part of the owner's three-part working system.
+## Updates respect your system
 
-## What the guided process handles
+A new release is reference material for an implementation plan you agree on with your agent. It does not authorize replacing your system with a new template. Review relevant benefits, dependencies, and effects; adopt, adapt, decline, or defer improvements. Apply only the agreed plan with verified recovery. Your preferences, files, and customizations remain yours.
 
-- discovers existing Git history, repositories, remotes, and uncommitted work;
-- establishes one private hosted primary Git destination, guiding GitHub setup by default when none exists;
-- configures any secondary Git service as an automatic mirror of the primary;
-- preserves existing files before reorganizing or updating anything;
-- validates the finished system and gives a recovery receipt;
-- makes every real business folder its own private Git repository when that business is created;
-- explains optional recurring workflows, checks what the owner's tools can actually support, and creates or updates only the routines the owner accepts.
+## Tools, privacy, and cost
 
-Git is part of the fully protected standard path. GitHub is where Starter.OS is distributed and is the normal guided private primary for a new owner. An existing suitable GitLab or other hosted primary may be preserved when the owner prefers it. Local-only Git is an incomplete recovery state because it does not protect against device loss. Agents handle the technical Git work wherever possible and push only to the chosen primary.
+Starter.OS is free. AI subscriptions and external services may have separate costs. No specific model or harness is required; use verified capabilities in the environment you already have. Cloud AI can help operate owner-controlled files. Scheduled work needs an available runtime and separately verified access.
 
-The repository brain can run anywhere a capable agent can reach it. Setup and update need an environment that can work with files, Git, and the included Ruby tools. A persistent Chief of Staff also needs an always-available agent that can reach the files, schedule, sources, and destination. That agent may run locally or online. Starter.OS checks what the environment can actually do instead of forcing a local, cloud, or hybrid label.
+This public repository is a blueprint, never your private working copy. Do not personalize it or use a public fork to hold private information. Never store passwords, tokens, recovery codes, or private keys in the system or chat.
 
-## Agent and model independence
+## Releases and maintainers
 
-The repository is the product. It contains Markdown instructions, skills, templates, release records, and checking tools. Codex, ChatGPT, Claude, Hermes, Goose, and other file-capable agents can use the same files. Provider-specific files only point back to the shared rules. Owners may customize their private copy.
+Normal setup uses an approved released source resolved to its exact commit. This checkout's `setup/release-manifest.json` identifies its version and release status. Unreleased candidates require an explicit choice; tools refuse candidate writes without `--allow-unreleased`. A mutable main branch is not proof of a released version.
 
-## Skills and automations
+See [CHANGELOG.md](CHANGELOG.md) for changes, compatibility, limitations, and recovery. Run `ruby setup/scripts/validate-starter-kit.rb` for the complete local release suite. Human setup, hosted recovery, schedules, and environment support require separate acceptance evidence.
 
-Portable workflows live in `os/skills/` and are classified in `os/skill-map.md`. Skills never run merely because they exist. Starter.OS includes optional recipes for a Morning Brief, a cited News Report, silent security monitoring, and cross-project reconciliation. They remain provider-neutral, require an explicit owner choice, and must be verified after creation or update.
-
-## Privacy
-
-This repository is a public blueprint. Never personalize it or add credentials. The guided process creates a separate private system. Do not use a public fork as the private working repository.
-
-## Licenses
-
-Software and scripts are available under the MIT License in [`setup/legal/LICENSE-CODE`](setup/legal/LICENSE-CODE). Documentation, the manual, Markdown skills, and templates are available under CC BY 4.0 in [`setup/legal/LICENSE-CONTENT`](setup/legal/LICENSE-CONTENT). See [`LICENSE`](LICENSE) for the boundary and attribution.
-
-Permanent version history, current unreleased work, compatibility, limitations, update steps, and rollback guidance are in [`CHANGELOG.md`](CHANGELOG.md).
-
-## Maintainers
-
-Run `ruby setup/scripts/validate-starter-kit.rb` before publication. The release manifest and validators check clean installation, named owner instructions, managed-file updates, protected manual behavior, local Git history, and privacy. Hosted primaries and mirrors are checked separately and reported in `os/recovery.md`.
+Software uses [MIT](setup/legal/LICENSE-CODE); documentation, skills, and templates use [CC BY 4.0](setup/legal/LICENSE-CONTENT). [LICENSE](LICENSE) explains attribution and marks.

@@ -1,10 +1,10 @@
 ---
 type: skill
 created: 2026-08-03
-updated: 2026-09-03
-reviewed: 2026-09-03
-status: draft
-authority: exploratory
+updated: 2026-09-05
+reviewed: 2026-09-05
+status: living
+authority: canon
 source: ai
 ---
 
@@ -26,7 +26,7 @@ After the vault has enough meaningful history, during an owner-approved periodic
 4. Ask before changing protected identity or behavior files.
 5. Add a receipt link to the source record and preserve the original words in `life/records/`.
 6. Promote only a small number per run; defer weak or one-off candidates.
-7. Update the watermark and report what changed.
+7. Record the reviewed range in an existing authorized review/status record and report changes. Do not invent a new tracking system.
 8. List clearly done or superseded temporary material as candidates for [[vault-maintenance]]. Do not move or remove files here.
 
 ## boundaries

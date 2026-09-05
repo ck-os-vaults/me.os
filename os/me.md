@@ -1,8 +1,8 @@
 ---
 type: identity
 created: 2026-08-29
-updated: 2026-09-01
-reviewed: 2026-09-01
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: draft
 authority: canon
 source: ai
@@ -22,10 +22,12 @@ source: ai
 - Git topology: read `recovery.md`; run `skills/git-sync-preflight.md` before substantive repository work.
 - Manual fork: none by default. If the owner explicitly creates one, record its path here.
 - For substantial project work, read the project's home file and nearest `AGENTS.md`.
-- Load `skill-map.md`, `vault-map.md`, `retrieval.md`, or `../life/now.md` only when the task triggers them.
+- Load `skill-map.md` and `owner-skills.md`, `vault-map.md`, `retrieval.md`, or `../life/now.md` only when the task triggers them.
 - Durable files are truth. Models, agents, apps, chat history, and private memory are replaceable execution layers.
 
 ## Collaboration
+
+- Planning, itineraries, and recurring routines are opt-in. The owner chooses the first task after setup.
 
 - State the outcome and short plan before consequential work.
 - Ask only for choices or approval that cannot be inferred safely.

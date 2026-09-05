@@ -8,18 +8,82 @@ require "set"
 
 ROOT = Pathname.new(File.expand_path("../..", __dir__))
 OUTPUT = ROOT.join("setup", "release-manifest.json")
-RELEASE_VERSION = "3.0.0"
+RELEASE_VERSION = "3.1.0"
 RELEASE_DATE = nil
 
 OWNER_OWNED = Set.new(%w[
   AGENTS.md
   os/me.md
+  os/owner-skills.md
   os/recovery.md
   os/integrations.md
   life/knowledge-map.md
   life/now.md
   life/wiki/owner.md
   life/records/decisions.md
+]).freeze
+
+HISTORICAL_SOURCES = {
+  "2.0.0" => "bb7d3c744348c933b03181a7dffa0b6a8c8701ca",
+  "2.1.0" => "dd03a11",
+  "3.0.0" => "01f60e03b4ad22b4f9135051df57d73f8a7701f4"
+}.freeze
+UPDATE_GROUPS = {
+  "foundation" => { "description" => "Shared rules, personal extension support, helpers, and validation", "requires" => [] },
+  "morning-brief" => { "description" => "Optional Morning Brief recipe; does not enable a schedule", "requires" => [] },
+  "news-report" => { "description" => "Optional cited News Report recipe; does not enable a schedule", "requires" => [] },
+  "work-wrap" => { "description" => "Optional work closeout recipe", "requires" => [] },
+  "reconciliation" => { "description" => "Optional cross-project checkpoint recipe", "requires" => [] },
+  "security-watch" => { "description" => "Security review and optional read-only watch recipe", "requires" => [] }
+}.freeze
+ARTIFACT_GROUPS = {
+  "os/skills/daily-brief.md" => "morning-brief", "os/skills/news-report.md" => "news-report",
+  "os/skills/eod-wrap.md" => "work-wrap", "os/skills/task-reconciliation.md" => "reconciliation",
+  "os/skills/security-sweep.md" => "security-watch"
+}.freeze
+MANAGED_PATHS = Set.new(%w[
+  CLAUDE.md
+  life/.gitattributes
+  life/.gitignore
+  life/AGENTS.md
+  life/CLAUDE.md
+  life/documents/readme.md
+  life/projects/readme.md
+  life/readme.md
+  life/records/readme.md
+  os/.gitattributes
+  os/.gitignore
+  os/AGENTS.md
+  os/CLAUDE.md
+  os/knowledge-map.md
+  os/license.md
+  os/manual.md
+  os/retrieval.md
+  os/scripts/add-business.rb
+  os/scripts/add-project.rb
+  os/skill-map.md
+  os/skills/browser-use.md
+  os/skills/daily-brief.md
+  os/skills/decision-log.md
+  os/skills/distill.md
+  os/skills/drift-recovery.md
+  os/skills/eod-wrap.md
+  os/skills/git-sync-preflight.md
+  os/skills/metadata-audit.md
+  os/skills/news-report.md
+  os/skills/readme.md
+  os/skills/security-intake.md
+  os/skills/security-sweep.md
+  os/skills/task-reconciliation.md
+  os/skills/vault-maintenance.md
+  os/templates/daily.md
+  os/templates/map.md
+  os/templates/note.md
+  os/templates/readme.md
+  os/templates/root-AGENTS.txt
+  os/templates/root-CLAUDE.txt
+  os/validate-starter-os.rb
+  os/vault-map.md
 ]).freeze
 
 RENDERERS = {
@@ -74,11 +138,13 @@ artifacts = source_targets.sort.map do |target, source|
   source_path = ROOT.join(source)
   stop("missing source for #{target}: #{source}") unless source_path.file?
 
+  stop("undeclared artifact ownership: #{target}") unless OWNER_OWNED.include?(target) || MANAGED_PATHS.include?(target)
   ownership = OWNER_OWNED.include?(target) ? "owner-owned" : "managed"
   artifact = {
     "id" => target,
     "path" => target,
     "source" => source,
+    "update_group" => ARTIFACT_GROUPS.fetch(target, "foundation"),
     "ownership" => ownership,
     "permitted_editor" => ownership == "managed" ? "Starter.OS update or explicit owner fork" : "owner and approved agents",
     "update" => ownership == "managed" ? "replace-if-unmodified" : "seed-once-then-preserve",
@@ -121,7 +187,10 @@ manifest = {
   "version" => RELEASE_VERSION,
   "status" => RELEASE_DATE ? "released" : "unreleased",
   "released" => RELEASE_DATE,
-  "supported_updates" => ["unversioned-legacy", "2.0.0", "2.1.0", RELEASE_VERSION],
+  "supported_updates" => (["unversioned-legacy"] + HISTORICAL_SOURCES.keys + [RELEASE_VERSION]).uniq,
+  "historical_sources" => HISTORICAL_SOURCES,
+  "supported_partial_updates" => ["3.0.0", RELEASE_VERSION].uniq,
+  "update_groups" => UPDATE_GROUPS,
   "licenses" => {
     "code" => "MIT",
     "content" => "CC-BY-4.0"

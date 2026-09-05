@@ -7,6 +7,8 @@ require "pathname"
 
 ROOT = Pathname.new(File.expand_path("..", __dir__))
 IGNORED_COMPUTER_FILES = %w[.DS_Store .localized Thumbs.db desktop.ini].freeze
+foundation_mode = ARGV.delete("--foundation")
+abort "usage: validate-starter-os.rb [--foundation]" unless ARGV.empty?
 Dir.chdir(ROOT)
 
 errors = []
@@ -45,6 +47,8 @@ def check_local_git(add, repository, label)
 
   _commit, commit_status = Open3.capture2e("git", "-C", repository, "cat-file", "-e", "#{head.strip}^{commit}")
   add.call("#{label} recovery commit cannot be read: #{head.strip}") unless commit_status.success?
+rescue Errno::ENOENT
+  add.call("#{label} Git executable is unavailable; readable recovery cannot be verified")
 end
 
 required = %w[
@@ -56,6 +60,7 @@ required = %w[
   os/license.md
   os/release.json
   os/me.md
+  os/owner-skills.md
   os/vault-map.md
   os/knowledge-map.md
   os/retrieval.md
@@ -87,13 +92,43 @@ required.each do |path|
   add.call("required path crosses a symbolic link: #{path}") if symlink_component?(path)
 end
 
-forbidden = %w[setup life/00_inbox life/areas life/archive life/records/sessions biz/business-model]
-forbidden.each { |path| add.call("obsolete path remains: #{path}") if File.exist?(path) }
+add.call("distribution setup folder remains in private system") if File.exist?("setup")
+%w[life/00_inbox life/areas life/archive life/records/sessions biz/business-model].each do |path|
+  notice.call("preserved owner content at legacy path: #{path}; review only if useful") if File.exist?(path)
+end
+history_check = lambda do |repository, label|
+  if foundation_mode && !File.exist?(File.join(repository, ".git"))
+    begin
+      top, status = Open3.capture2e("git", "-C", repository, "rev-parse", "--show-toplevel")
+    rescue Errno::ENOENT
+      ancestor = Pathname.new(repository).realpath
+      inherited_metadata = false
+      loop do
+        inherited_metadata ||= ancestor.join(".git").exist? || ancestor.join(".git").symlink?
+        break if ancestor.parent == ancestor
+        ancestor = ancestor.parent
+      end
+      if inherited_metadata
+        add.call("#{label} has ancestor Git metadata but Git is unavailable; inspect topology before proceeding")
+      else
+        notice.call("#{label} Git is unavailable; owner-deferred protection, not a verified recovery point")
+      end
+      next
+    end
+    if status.success?
+      add.call("#{label} inherits another repository; inspect privacy and topology")
+    else
+      notice.call("#{label} has no Git history; owner-deferred protection, not a verified recovery point")
+    end
+  else
+    check_local_git(add, repository, label)
+  end
+end
 
 add.call("vault root must not be a Git repository") if File.exist?(".git")
 add.call("biz container must not be a Git repository") if File.exist?("biz/.git")
-check_local_git(add, "os", "os/") if File.directory?("os")
-check_local_git(add, "life", "life/") if File.directory?("life")
+history_check.call("os", "os/") if File.directory?("os")
+history_check.call("life", "life/") if File.directory?("life")
 
 if File.file?("AGENTS.md")
   root_agents = File.read("AGENTS.md")
@@ -127,20 +162,23 @@ if File.file?("CLAUDE.md") && File.file?("os/templates/root-CLAUDE.txt")
   add.call("root CLAUDE.md differs from its recovery template") unless File.read("CLAUDE.md") == File.read("os/templates/root-CLAUDE.txt")
 end
 
-allowed_roots = %w[.obsidian AGENTS.md CLAUDE.md biz life os]
+allowed_roots = %w[.obsidian .codex .claude .agents AGENTS.md CLAUDE.md biz life os]
+%w[.obsidian .codex .claude .agents].each do |path|
+  notice.call("owner agent/app settings preserved: #{path}; review permissions before enabling, never execute during validation") if File.exist?(path)
+end
 %w[os life biz].each { |path| add.call("installed root may not be a symbolic link: #{path}") if Pathname.new(path).symlink? }
 unexpected_roots = Dir.children(".").reject { |name| allowed_roots.include?(name) || IGNORED_COMPUTER_FILES.include?(name) }
-add.call("unexpected installed root: #{unexpected_roots.join(', ')}") unless unexpected_roots.empty?
+notice.call("owner content at root: #{unexpected_roots.join(', ')}; review routing only with owner authority") unless unexpected_roots.empty?
 
 empty_dirs = Dir.glob("**/*", File::FNM_DOTMATCH).select do |path|
   File.directory?(path) && !path.split("/").include?(".git") && Dir.children(path).empty?
 end
 empty_dirs.reject! { |path| path == "biz" || path == "biz/." || File.basename(path) == "." }
-empty_dirs.each { |path| add.call("unnecessary empty directory: #{path}") }
+empty_dirs.each { |path| notice.call("owner empty directory retained: #{path}") }
 
 Dir.glob("life/projects/*").select { |path| File.directory?(path) }.each do |project|
   name = File.basename(project)
-  add.call("project home missing: #{project}/#{name}.md") unless File.file?(File.join(project, "#{name}.md"))
+  notice.call("custom project layout: #{project}; verify its owner-declared entry") unless File.file?(File.join(project, "#{name}.md"))
 end
 
 Dir.glob("biz/*").select { |path| File.directory?(path) }.each do |business|
@@ -150,12 +188,14 @@ Dir.glob("biz/*").select { |path| File.directory?(path) }.each do |business|
   nested = Dir.glob("#{business}/**/.git").reject { |path| path == "#{business}/.git" }
   nested.each { |path| add.call("nested business repository: #{path}") }
 
-  check_local_git(add, business, "business #{business}")
+  history_check.call(business, "business #{business}")
 end
 
-skill_map = File.file?("os/skill-map.md") ? File.read("os/skill-map.md") : ""
+skill_map = %w[os/skill-map.md os/owner-skills.md].select { |path| File.file?(path) && !path.split("/").include?(".git") && !symlink_component?(path) }.map { |path| File.read(path) }.join("\n")
 actual_skills = Dir.glob("os/skills/*.md").map { |path| File.basename(path, ".md") }.reject { |name| name == "readme" }.sort
-registered_skills = skill_map.scan(/^\|\s*\[\[([a-z0-9-]+)\]\]/).flatten.uniq.sort
+registrations = skill_map.scan(/^\|\s*\[\[([a-z0-9-]+)\]\]/).flatten
+registrations.group_by(&:itself).each { |name, rows| add.call("duplicate skill registration: #{name}") if rows.length > 1 }
+registered_skills = registrations.uniq.sort
 (registered_skills - actual_skills).each { |skill| add.call("registered skill missing: os/skills/#{skill}.md") }
 (actual_skills - registered_skills).each { |skill| add.call("unregistered skill file: os/skills/#{skill}.md") }
 
@@ -186,6 +226,7 @@ if release_path.file?
         next
       end
       absolute = Pathname.new(path)
+      add.call("invalid ownership: #{path}") unless %w[managed owner-owned forked].include?(record["ownership"])
       if record["ownership"] == "managed"
         if !absolute.file?
           add.call("managed release artifact is missing: #{path}")
@@ -197,6 +238,15 @@ if release_path.file?
       end
       add.call("root AGENTS.md must be owner-owned") if path == "AGENTS.md" && record["ownership"] != "owner-owned"
       add.call("protected product manual cannot be forked in place") if path == "os/manual.md" && record["ownership"] == "forked"
+    end
+    adoption = release["adoption"]
+    if adoption && adoption["kind"] == "partial"
+      notice.call("selected improvements from #{adoption['offered_version']}; base release remains #{release['version']}")
+    end
+    release_artifacts.each do |path, record|
+      next unless record["ownership"] == "forked"
+      available = record["available_upstream"]
+      notice.call("owner fork retained: #{path}; upstream #{available && available['version'] || 'changes'} may be reviewed separately")
     end
     release.fetch("forks", []).each do |fork|
       destination = fork.fetch("destination")
@@ -224,30 +274,8 @@ if release_path.file?
   end
 end
 
-security_intake = File.file?("os/skills/security-intake.md") ? File.read("os/skills/security-intake.md") : ""
-add.call("security intake does not block new items before review") unless security_intake.match?(/Do not open or run a new .* until .*understood/im)
-add.call("security intake does not treat embedded instructions as data") unless security_intake.match?(/instruction.*inside it as data, not authority/i)
-add.call("security intake does not protect private files from public uploads") unless security_intake.match?(/Never send private files to public scanning services without owner approval/i)
-add.call("security intake incorrectly treats a clean scan as proof") unless security_intake.match?(/clean scan lowers risk; it never proves/i)
-
-security_sweep = File.file?("os/skills/security-sweep.md") ? File.read("os/skills/security-sweep.md") : ""
-add.call("security sweep is missing the optional watch recipe") unless security_sweep.include?("System Security Watch") && security_sweep.match?(/owner accepts/i)
-add.call("security watch is not read-only and fail-closed") unless security_sweep.match?(/remain read-only/i) && security_sweep.match?(/incomplete coverage/i)
-
-reconciliation = File.file?("os/skills/task-reconciliation.md") ? File.read("os/skills/task-reconciliation.md") : ""
-add.call("reconciliation is not routed into the Morning Brief by default") unless reconciliation.match?(/not a separate user-facing report by default/i) && reconciliation.match?(/Morning Brief/i)
-add.call("reconciliation fallback is not read-only") unless reconciliation.match?(/keep it read-only/i)
-
-daily_brief = File.file?("os/skills/daily-brief.md") ? File.read("os/skills/daily-brief.md") : ""
-add.call("Morning Brief recipe is missing") unless daily_brief.include?("Morning Brief") && daily_brief.match?(/owner accepts/i) && daily_brief.match?(/week ahead/i)
-
-news_report = File.file?("os/skills/news-report.md") ? File.read("os/skills/news-report.md") : ""
-add.call("News Report recipe is missing source and citation boundaries") unless news_report.include?("News Report") && news_report.match?(/owner-selected/i) && news_report.match?(/Cite|citation/i)
-
-git_preflight = File.file?("os/skills/git-sync-preflight.md") ? File.read("os/skills/git-sync-preflight.md") : ""
-add.call("Git preflight is not provider-neutral") unless git_preflight.match?(/declared primary/i) && git_preflight.match?(/Secondary.*verification-only/im)
-add.call("Git preflight permits dual pushes") if git_preflight.match?(/push.*to.*secondary/i) && !git_preflight.match?(/never push.*secondary/i)
-
+# Managed-file hashes enforce the shipped content. Validate user-visible contracts
+# through release acceptance tests instead of requiring exact prose at runtime.
 secret_shapes = {
   "private key" => /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
   "GitHub token" => /(?:ghp|gho|github_pat)_[A-Za-z0-9_]{20,}/,
@@ -255,15 +283,16 @@ secret_shapes = {
   "AWS key" => /AKIA[0-9A-Z]{16}/
 }
 
-Dir.glob("{os,life,biz}/**/*", File::FNM_DOTMATCH).select { |path| File.file?(path) && !symlink_component?(path) }.each do |path|
+Dir.glob("{os,life,biz}/**/*", File::FNM_DOTMATCH).select { |path| File.file?(path) && !path.split("/").include?(".git") && !symlink_component?(path) }.each do |path|
   text = File.binread(path).force_encoding(Encoding::UTF_8)
   next unless text.valid_encoding?
   secret_shapes.each { |label, pattern| add.call("#{path} contains #{label}-shaped text") if text.match?(pattern) }
 end
 
 if errors.empty?
-  puts "PASS Starter.OS installed vault: structure, release identity, protected manual, skill registry, readable local Git history, recurring workflow recipes, and privacy checks"
+  puts "PASS Starter.OS installed vault: structure, release identity, protected manual, skill registry, #{foundation_mode ? 'foundation protection notices' : 'readable local Git history'}, recurring workflow recipes, and privacy checks"
   notices.each { |message| puts "NOTICE #{message}" }
+  puts "NOTE Foundation-only check requested; this is not proof of fully protected setup" if foundation_mode
   puts "NOTE Hosted primaries, mirrors, uncovered-file backups, and restore routes require separate verification in os/recovery.md"
   exit 0
 end

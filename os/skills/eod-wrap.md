@@ -1,10 +1,10 @@
 ---
 type: skill
 created: 2026-06-20
-updated: 2026-09-03
-reviewed: 2026-09-03
-status: draft
-authority: exploratory
+updated: 2026-09-05
+reviewed: 2026-09-05
+status: living
+authority: canon
 source: ai
 ---
 

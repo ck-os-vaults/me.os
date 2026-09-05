@@ -24,8 +24,15 @@ stop("use lowercase kebab-case") unless name.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\
 stop("run this from an installed Starter.OS vault") unless projects.directory?
 stop("personal projects may be added only inside a private installed vault") if vault_root.join("setup", "release-manifest.json").exist?
 
+cursor = vault_root
+abort "Cannot create through a linked vault" if cursor.symlink?
+cursor = cursor.join("life")
+abort "Cannot create through a linked container" if cursor.symlink?
+cursor = cursor.join("projects")
+abort "Cannot create through a linked container" if cursor.symlink?
+
 destination = projects.join(name)
-stop("life/projects/#{name} already exists") if destination.exist?
+stop("life/projects/#{name} already exists") if destination.exist? || destination.symlink?
 
 FileUtils.mkdir_p(destination)
 File.write(destination.join("#{name}.md"), <<~MARKDOWN)

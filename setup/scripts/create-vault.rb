@@ -5,6 +5,7 @@ require "fileutils"
 require "json"
 require "pathname"
 require "time"
+require "open3"
 
 SOURCE_ROOT = Pathname.new(File.expand_path("../..", __dir__)).realpath
 MANIFEST_PATH = SOURCE_ROOT.join("setup", "release-manifest.json")
@@ -69,6 +70,7 @@ def safe_source(root, relative)
   current
 end
 
+allow_unreleased = !!ARGV.delete("--allow-unreleased")
 raw_destination = ARGV.shift
 stop("provide the full destination ending in .os") if raw_destination.to_s.strip.empty?
 stop("unexpected options: #{ARGV.join(' ')}") unless ARGV.empty?
@@ -82,7 +84,10 @@ stop("the destination exists and is not a folder") if destination.exist? && !des
 stop("the destination folder is not empty") if destination.directory? && !destination.children.empty?
 stop("release manifest is missing; run ruby setup/scripts/build-release-manifest.rb") unless MANIFEST_PATH.file?
 
+checked, status = Open3.capture2e("ruby", SOURCE_ROOT.join("setup/scripts/validate-source.rb").to_s)
+stop("source integrity check failed: #{checked.strip}") unless status.success?
 manifest = JSON.parse(MANIFEST_PATH.read)
+stop("this source is an unreleased candidate; explicitly approve --allow-unreleased or use an approved released source") if manifest["status"] != "released" && !allow_unreleased
 stop("unsupported release manifest") unless manifest["format"] == 1 && manifest["product"] == "Starter.OS"
 stop("release manifest has no version") if manifest["version"].to_s.strip.empty?
 
@@ -121,6 +126,7 @@ release_record = {
   "version" => manifest.fetch("version"),
   "installed_at" => Time.now.utc.iso8601,
   "manifest_sha256" => sha256(MANIFEST_PATH),
+  "installed_source" => { "version" => manifest.fetch("version"), "manifest_sha256" => sha256(MANIFEST_PATH) },
   "artifacts" => artifacts.to_h do |artifact|
     path = artifact.fetch("path")
     target = destination.join(path)
@@ -141,4 +147,6 @@ release_path.write("#{JSON.pretty_generate(release_record)}\n")
 
 puts "Created #{destination.basename} at #{destination}"
 puts "Installed Starter.OS #{manifest.fetch('version')}"
-puts "Next: personalize confirmed owner context, establish Git protection, then run ruby os/validate-starter-os.rb"
+puts "Next: establish and verify the approved Git baseline and private hosted copy before substantial personalization."
+puts "If Git was declined or deferred, honor that choice and record the protection gap; do not initialize Git to pass a check."
+puts "Then personalize confirmed context and validate: use ruby os/validate-starter-os.rb for standard setup, or add --foundation for explicit Git decline/deferral."

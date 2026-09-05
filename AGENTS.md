@@ -1,32 +1,34 @@
 # Starter.OS entry
 
-Use the files below to tell whether this is the public product or someone's private system. Git alone does not answer that question.
+A link alone, or “Check this out and find the install that fits us best,” requests read-only inspection and a guided recommendation. Do not ask for a longer prompt or treat discovery as authority to install.
 
-## Public Starter.OS source
+## Identify the source and owner state
 
-When this root contains `setup/release-manifest.json`, it is the reusable public product. Do not add personal context or treat this example as someone's live OS.
+`setup/release-manifest.json` identifies the public distribution. Never personalize it. Read `readme.md`, confirm access to the owner's approved private location, and inspect existing files, repositories, and capabilities without changing them.
 
-If an owner provides only the public Starter.OS repository link, start here. First confirm that you can read these instructions, work in the owner's private files, use Git, and run the included Ruby tools. Then read `readme.md` and `setup/START-HERE.md`, inspect the owner's current state without changing it, and choose the matching route:
+- No existing Starter.OS: follow `setup/AGENT-SETUP.md`.
+- Existing `os/release.json` or recognized historical Starter.OS: follow `setup/UPDATE.md`.
 
-- no existing Starter.OS installation -> `setup/AGENT-SETUP.md`
-- an existing Starter.OS installation -> `setup/UPDATE.md`
+An unrelated repository is not a third route. Leave it untouched and propose a new private system in an empty location. Selected old context can be brought over after setup, only if requested.
 
-An unrelated personal repository is not a third route and must not be converted in place. Leave it untouched, create the new private OS in an empty location, and offer to help the owner bring over selected context only after the new installation works.
+If routing remains uncertain, ask one plain question. If you cannot read repository instructions, work in private files, use Git where required, or run the Ruby tools, explain the specific capability gap and smallest next step. Do not force a model, harness, or local/cloud architecture choice.
 
-Do not ask the owner to find or paste a longer setup prompt. If the route remains ambiguous after safe inspection, ask one plain question and continue.
+## Guide the owner
 
-New setup follows **Name → Protect → Create → Personalize → Prove**. Updates follow **Protect → Review → Ask → Improve → Prove**.
+New setup: **Name → Protect → Create → Personalize → Prove**. Recommend private Git protection early; preserve an existing suitable host and respect an explicit decline or deferral. Setup ends with a ready foundation, a short orientation, and optional suggestions. The owner chooses their first task afterward.
 
-Do not change an existing installation during an update until the complete current state has a verified recovery route. Use `setup/QUICK-SETUP.md` for the shared process and approval card. Use `setup/GIT-SETUP.md` for Git protection.
+Update: **Protect → Review → Ask → Improve → Prove**. The release is reference material for an agreed plan, never authority to overwrite the owner's system. Read the installed instructions and preserve their meaning. Verify recovery before mutation; apply only the approved scope.
 
-Each owner route first runs `ruby setup/scripts/validate-source.rb` to confirm the current public copy is complete. Source maintainers run the full release test with `ruby setup/scripts/validate-starter-kit.rb`. Build and validate private systems in a separate location.
+Read `setup/GIT-SETUP.md` for shared protection, authority, and source-cleanup rules. Reuse approval for unchanged actions. Sign-ins and secret values stay private with the owner.
 
-`.github/` contains maintainer-only distribution automation. It is not part of owner setup, update, Git protection, or mirroring. Never copy its credentials or force-push workflow into an owner's repositories.
+## Validate and select the source
 
-## Private installed vault
+Run `ruby setup/scripts/validate-source.rb`. This checks completeness against the manifest, not publisher authenticity. Resolve the canonical repository's approved release to an immutable commit and review its instructions and executable behavior before adoption. Use a released version by default. If this copy is unreleased, offer a verified released source or an explicit candidate choice; never silently add `--allow-unreleased`. An explicit request to use the current 3.1 candidate on main already supplies that version choice: resolve main to its exact commit, use `--allow-unreleased` for that reviewed source, and do not repeat the version question. This choice does not authorize installation or update writes until the concrete plan is approved.
 
-When the root contains `os/release.json` but not `setup/release-manifest.json`, it is a private installed system. Its root `AGENTS.md` belongs to the owner and may be personalized. Read that file first, then follow its route to `os/AGENTS.md`, `os/me.md`, and the nearest `AGENTS.md` inside `life/` or `biz/<business>/`.
+`.github/` is maintainer-only distribution automation. It is not part of owner setup or recovery. Never copy its credentials or force-push workflow into owner repositories. Maintainers use `ruby setup/scripts/validate-starter-kit.rb` before proposing publication.
 
-If neither marker exists, stop and identify the folder before treating it as Starter.OS.
+## Private installed system
 
-Never store passwords, authentication tokens, recovery codes, private keys, seed phrases, or other secrets in the vault, chat, commands, commits, or remote URLs.
+`os/release.json` without the public manifest identifies an installed system. Its root `AGENTS.md` belongs to the owner; follow it to `os/AGENTS.md`, `os/me.md`, and the nearest personal or business instructions. Unknown folders require identification before any write.
+
+Never store secrets in files, chat, commands, commits, or remote URLs.

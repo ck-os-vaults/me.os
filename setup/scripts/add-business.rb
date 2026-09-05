@@ -24,8 +24,13 @@ stop("use lowercase kebab-case") unless name.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\
 stop("run this from an installed Starter.OS vault") unless businesses.directory?
 stop("businesses may be added only inside a private installed vault") if vault_root.join("setup", "release-manifest.json").exist?
 
+cursor = vault_root
+abort "Cannot create through a linked vault" if cursor.symlink?
+cursor = cursor.join("biz")
+abort "Cannot create through a linked container" if cursor.symlink?
+
 destination = businesses.join(name)
-stop("biz/#{name} already exists") if destination.exist?
+stop("biz/#{name} already exists") if destination.exist? || destination.symlink?
 
 FileUtils.mkdir_p(destination)
 today = Date.today.to_s

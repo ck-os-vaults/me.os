@@ -1,8 +1,8 @@
 ---
 type: manual
 created: 2026-08-30
-updated: 2026-09-03
-reviewed: 2026-09-03
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: living
 authority: reference
 source: starter-os
@@ -10,197 +10,72 @@ source: starter-os
 
 # How Starter.OS works
 
-**This is the simple manual.** It is for you first and your agent second.
+This protected manual explains your foundation. An agent may read and explain it, but may not rewrite or personalize it during normal work.
 
-An agent may read this file, explain it, and point you to a section. It may not rewrite or personalize this file during normal work. Starter.OS updates it only through the protected update process.
+## Your second brain and Chief
 
-## Starter.OS in one minute
+Your files hold lasting knowledge, preferences, decisions, and project context. Chief is the AI coordination role that helps you work with them. You choose its name and tools. Your judgment and direction shape the system; the agent handles the mechanical work within your approval.
 
-Starter.OS is a set of folders and plain files that help an AI understand how you work.
+An agent is the tool doing work; a model is the AI engine it uses; a harness or app supplies its tools and execution. These can change while your durable information stays yours. Actual permissions, connections, schedules, and capabilities need separate verification in each environment.
 
-Your files hold the lasting truth. The AI is a helper that reads those files and acts on your requests. You can change the AI, model, app, or computer without rebuilding the whole system.
+## Where information lives
 
-You own the files, accounts, backups, and decisions.
+- `os/` holds operating guidance, preferences, skills, validation, and recovery.
+- `life/` holds personal notes, knowledge, decisions, and projects.
+- `biz/` holds real businesses, added only when needed.
 
-## Your Chief of Staff
+Your private system takes your chosen name. Root `AGENTS.md` belongs to you and points to `os/AGENTS.md`, `os/me.md`, nearest project/business instructions, and `os/release.json` for upstream identity. Keep lasting personal rules in their protected home. The root itself is not a Git repository, so its small entry files need full-file backup.
 
-Your main AI helper is called the Chief of Staff, or Chief for short. You can give it another name.
+A project is work with a real outcome; a business has its own context and repository. Each gets one clear home. Extra personal content and reviewed agent settings are preserved. A notice about old folders or custom layout invites review, not deletion. The public `setup/` folder belongs only to the installer.
 
-Start there when you are unsure where work belongs. Tell it the outcome you want in ordinary language. It should:
+## Installation
 
-- find the right information;
-- keep project work with its project;
-- show a short plan before important changes;
-- ask when it needs your decision or approval;
-- bring you only the most important updates.
+Give an agent the public repository link. It inspects first and guides **Name → Protect → Create → Personalize → Prove**. It explains the foundation, recommends private backup early, and asks for the meaningful choices together. Sign-ins and secret values stay private with you.
 
-When your agent supports persistent tasks, use one main Chief of Staff home and one home for each real project. Routine work and scheduled reports stay with their project. The Chief receives only updates that change your priorities or need your attention.
+Setup ends when the foundation and its protection status are verified and explained. It may suggest useful optional improvements, which you can approve, decline, or defer. No real task, example project, exercise, or automation is required. You choose your first task afterward.
 
-The Chief is a role, not a special model. Many capable agents can fill it.
+An unrelated old repository remains separate and unchanged. After setup, you can ask to bring over selected context. Do not use a public fork for private work.
 
-## Where things live
+## Git, backup, and recovery
 
-`os/` holds the shared rules, this manual, reusable skills, maps, and safety checks.
+Git is file history. A repository is a folder with that history; a commit is a recorded checkpoint. Local Git helps recover bad edits, but does not protect against device loss. A private hosted primary keeps an off-device copy. GitHub is the guided default; another suitable private host can stay. A mirror is an optional automatic downstream copy. Agents push only to the approved primary.
 
-`life/` holds your private personal information, current priorities, personal projects, knowledge, documents, and records.
+The standard protected system has separate repositories for `os/`, `life/`, and each business. You can decline or defer Git during a new installation. The agent records missing protection honestly and offers alternatives without repeatedly asking. Later changes that need recovery still require it.
 
-`biz/` holds real businesses. It stays empty until you actually need one. Each business becomes its own private Git repository when it is created.
+Git does not cover every ignored, untracked, hidden, root-level, or external file. Full-file backup closes those gaps. A successful upload is not a restore test. See `recovery.md` for verified facts, missing coverage, and where recovery material lives. Credentials are recovered through your credential manager, never the vault.
 
-A project gets one clear home. A business gets one clear home. The system avoids duplicate copies of the same truth.
+## Skills, integrations, and automations
 
-The name of the main folder is the name of your system, such as `Ryan.OS`. Its root `AGENTS.md` belongs to you and stays short. It must point agents to `os/AGENTS.md`, `os/me.md`, the nearest personal or business instructions, and `os/release.json` for updates. Lasting facts and rules belong in `os/me.md` or the right Git-protected project or business folder. Starter.OS remains the upstream framework used only when you ask for an update.
+A skill is a saved method for repeated work. Product skills are listed in `skill-map.md`; your personal skills live in `skills/` and are registered in owner-owned `owner-skills.md`. Adding a personal method should not require editing a protected product file.
 
-Keep ordinary notes and settings inside `os/`, `life/`, or a real business. Extra files at the main folder level are rejected so the three-part system stays clear.
+An integration connects another service. An automation runs accepted work on a schedule. Neither becomes active merely because a recipe is installed. Optional recipes include a Morning Brief, a cited News Report, System Security Watch, and cross-project reconciliation. Planning and questionnaires are choices, not compulsory Chief behavior. Security Watch stays read-only, quiet when checks finish cleanly, and reports incomplete coverage.
 
-## The words you will see
+Accepted routines need verified sources, permissions, runtime, schedule/timezone, and destination. Prefer existing task homes and update equivalents instead of creating duplicates. Declines and deferrals are remembered in `integrations.md`. Optional services may have their own costs.
 
-**Agent.** The AI tool doing the work.
+## Updates improve your system through agreement
 
-**Model.** The AI engine inside an agent. A model can change without changing your files.
+A new release is reference material for your agent and you. It does not authorize replacing your system with a template. Follow **Protect → Review → Ask → Improve → Prove**:
 
-**Chief of Staff.** Your main coordinating agent role.
+1. Protect current files with a verified recovery route.
+2. Compare your original release, actual customizations, and available improvements.
+3. Agree on meaningful changes, dependencies, and any adaptations or deferrals.
+4. Apply only that plan.
+5. Verify preservation and explain the result and recovery route.
 
-**Project.** Work with a real outcome, status, and next action.
+Personal files and preferences stay yours. Unchanged product files are eligible for an approved update; eligibility alone is not permission. A changed product file needs a decision. A fork is your explicitly customized version: keep it, reconcile it, or return to the reviewed upstream version. The original baseline stays available when known, and later improvements should still be visible.
 
-**Skill.** A saved method for work you may repeat. A skill does nothing until a real task calls for it.
+Selected improvement groups may be adopted without taking the full release. Their dependencies must fit. A highly customized system may need an agent-assisted adaptation instead of the standard updater. The receipt distinguishes selected changes from full release adoption. Your instructions must never be silently replaced or summarized away.
 
-**Automation.** A task that runs on a schedule after you approve it.
+## Validation and restoration
 
-**Integration.** A connection to another app or service.
+Validation checks local structure, required routing, registries, release identity, protected files, and readable Git history, and checks active files for common secret patterns. It does not prove every link, every privacy risk, hosted backup, or working schedule. Those need separate review. Foundation-only validation reports deferred Git and cannot certify full protection.
 
-**Git.** File history. It lets you see changes and return to an earlier version.
+An update creates an external transaction backup with the original commits, root entries, original and proposed write bytes, and an inventory. Its restore preview refuses to discard later owner work or use changed backup bytes. Restoration changes only the update's recorded paths and verifies the protected inventory. It does not reset remote history. Keep recovery until you accept the update.
 
-**Repository.** A folder whose history Git tracks.
+## Permissions and the manual
 
-**Primary.** The one Git location agents push to.
+Your agent may do ordinary reversible work within an approved task. It asks for meaningful choices and authority for structural changes, deletion, messages, publication, spending, access changes, private-data movement, and automation. Approval continues for the same unchanged actions. Checking an update is not permission to apply it.
 
-**Mirror.** An automatic second copy of the primary on another Git service.
+This manual explains; current owner instructions and the declared operating hierarchy control behavior. It is managed by Starter.OS. If you want a personal explanation, explicitly create an owner-owned fork such as `life/manual.md` and route it from `os/me.md`. The approved manual-fork update does that routing within its recovery transaction. Future updates keep the product manual available for comparison.
 
-**Commit.** A named checkpoint in Git history.
-
-**Validation.** A check that the system is complete and follows its rules.
-
-**Recovery point.** A verified place you can return to if a change goes wrong.
-
-**Local.** Work that runs on your computer.
-
-**Cloud.** Work that runs on another company's computers.
-
-**Fork.** Your own customized version of a file that Starter.OS normally updates.
-
-## Git and backup in plain language
-
-Git is part of the fully protected Starter.OS setup.
-
-Git on your computer protects you from bad edits because it keeps history. It does not protect you if the computer is lost or damaged.
-
-GitHub is the normal guided choice for a new owner because it keeps a private copy away from your computer. If you already use GitLab or another suitable service, you can keep it. The agent should handle the technical Git work wherever possible. You privately handle account sign-in, multifactor authentication, and recovery codes. You use one primary, and agents push only there.
-
-If you want another Git service too, it becomes an automatic mirror of the primary. The agent does not push separately to both. This prevents the two copies from quietly drifting apart.
-
-Git does not automatically include every ignored, untracked, hidden, or external file. Before an important change, your agent must tell you what is and is not covered.
-
-See `recovery.md` for your actual protection status.
-
-## Skills
-
-Skills are recipes for repeated work. They live in `skills/` and are listed in `skill-map.md`.
-
-Some skills are part of normal safe operation. Some are optional. Some can become scheduled routines. Some are only adapters for a particular agent or app.
-
-Having a skill does not mean it runs automatically. The trigger must be real, and actions still follow your approval boundaries.
-
-You can add, change, or remove skills in your private system. If you change a Starter.OS-managed skill, the next update should treat it as a conflict or an explicit fork, not silently overwrite it.
-
-## Optional recurring workflows
-
-Starter.OS includes portable recipes you can adopt when they fit your tools and life:
-
-**Morning Brief.** Prepares you for the day using the calendar, tasks, project status, and week ahead that you have authorized. It ends with a few short questions so your Chief of Staff knows what changed.
-
-**News Report.** Follows sources you choose. It cites them, explains what changed, tells you why it matters, and recommends whether to adopt, test, watch, or ignore it.
-
-**System Security Watch.** Runs a read-only check. It stays quiet when every check finishes and finds nothing meaningful. It reports real risks and tells you when it could not finish a check. It never fixes or installs anything by itself.
-
-**Task Reconciliation.** Collects important changes across projects for a Morning Brief or a checkpoint you request. It does not create another report by default.
-
-These are recipes, not required services or fixed schedules. Your agent first checks which scheduler, sources, destinations, and permissions actually exist. You may adopt, decline, or defer each option. A recurring run should return to its existing home base when possible instead of creating a new task every time.
-
-## Agents, models, and apps
-
-Starter.OS does not require Codex, ChatGPT, Claude, Hermes, Goose, or any other single agent.
-
-The shared Markdown files are the product. Agent-specific files should only point back to those shared rules.
-
-Different agents have different abilities. One may read local files, another may work in the cloud, and another may create scheduled tasks. Your agent should say what it can verify and what remains unavailable. It should never pretend a connection or automation works merely because it was configured.
-
-## Where it can run
-
-Starter.OS can work on your computer, in the cloud, or through both. You do not need to choose a technical label during setup.
-
-The agent checks what it can actually do. Scheduled work needs an always-available agent with access to the right files, sources, and destination. Ordinary on-demand work does not.
-
-If the same file changes in two places, the agent must stop and show both versions instead of silently choosing one.
-
-## What an agent may do
-
-An agent may normally read files, explain the system, inspect current state, and perform safe work inside a scope you already approved.
-
-It should ask before:
-
-- changing the system's structure;
-- publishing or sending anything;
-- creating accounts, repositories, tasks, or automations;
-- changing visibility, access, or settings;
-- spending money;
-- deleting unique information;
-- using private information outside its approved home;
-- making another important real-world commitment.
-
-Before a consequential change, it should show the smallest useful plan and the recovery route.
-
-## Installation and update
-
-**Installation.** Creates your new private OS in an empty location and names it for you.
-
-**Bring over what matters.** If you already have another repository, install your new OS separately. After it works, your agent can help copy only the context you still want. The old repository stays untouched and backed up until you decide otherwise.
-
-**Update.** Improves an existing Starter.OS. Your files stay yours. After approval, Starter.OS may replace one of its own files if you have not changed it. If you did change it, you choose whether to keep your version, replace it, or wait.
-
-New installation uses **Name → Protect → Create → Personalize → Prove**.
-
-Updates use five simple steps:
-
-1. **Protect.** Make sure the complete current system can be restored.
-2. **Review.** Understand what Starter.OS should improve and what you customized.
-3. **Ask.** Ask you only about real conflicts or important choices.
-4. **Improve.** Make the reviewed changes without silently replacing your work.
-5. **Prove.** Confirm nothing was lost and show how to return to the old state.
-
-The agent first inspects without changing anything. It then verifies Git and creates a separate local recovery copy for anything Git does not cover. That copy stays outside the working OS and is not treated as current information.
-
-A large customized agent-instruction file is never blindly replaced or reduced to a summary. The agent preserves the original, keeps useful personal meaning, offers to place each rule in the right protected home, and asks only when two instructions genuinely conflict. Your root `AGENTS.md` is owner-owned and survives updates. Because the root is not a Git repository, its entry files must also be covered by your full-file backup.
-
-Installation and update explain compatible new workflows and let you adopt, decline, or defer them without changing working customizations silently.
-
-The public `setup/` folder is only for installation and updates. It is not copied into your private system. An agent may remove a temporary public copy only when you approved the exact cleanup and it proved that the copy contains no personal work. Future updates begin from the current public GitHub link. Product-maintenance copies and old personal repositories stay intact.
-
-## Validation and recovery
-
-Validation checks whether required files exist, skills are registered, protected rules are present, local Git history is readable, links work, and files contain patterns that look like exposed secrets. It does not contact GitHub, GitLab, another backup, or a scheduler. Your agent checks those separately and records what it actually verified. A passing check is useful evidence. It cannot rule out every privacy or security risk.
-
-Recovery means returning to a verified earlier state. Before a major change, your agent should identify the exact Git commit and any extra local recovery copy needed. After the change, it should give you a short receipt with the version, validation result, protection status, and rollback route.
-
-## This manual is protected
-
-This file explains the product. It does not own every operating rule. If it conflicts with `AGENTS.md`, a current project rule, or your current direct instruction, the controlling source wins and the mismatch should be reported.
-
-An agent may not casually edit this file. If you want a personalized explanation, create an owner-owned fork such as `life/manual.md` and route agents to it from `me.md`. Starter.OS keeps the current product manual here so future updates can still explain what changed.
-
-## When you are unsure
-
-Ask your Chief:
-
-> Explain this using the Starter.OS manual and tell me the one next thing I need to decide.
-
-That is enough.
+When unsure, ask Chief to explain the relevant part and the next necessary choice.

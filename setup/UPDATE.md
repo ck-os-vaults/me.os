@@ -1,100 +1,97 @@
-# Improve an existing Starter.OS
+# Improve the owner's existing system
 
-> **Audience: Agent only.** Read `START-HERE.md`, `QUICK-SETUP.md`, and `GIT-SETUP.md`. Keep the owner-facing explanation to **Protect → Review → Ask → Improve → Prove**.
+> **Audience: Agent only.** Read the public `AGENTS.md` and shared `GIT-SETUP.md`. Keep the conversation to **Protect → Review → Ask → Improve → Prove**.
+
+A new release is reference material for a plan agreed with the owner. It does not authorize rewriting their system to match the template. Preserve their files, personal instructions, structure, and working behavior unless an exact change is included in the plan. A request to check or review an update grants no update-write authority.
 
 ## 1. Protect
 
-Validate the public source:
+Validate the selected source:
 
 ```sh
 ruby setup/scripts/validate-source.rb
 ```
 
-Confirm one installed target and read `os/release.json`. If it is absent, use the legacy update only when clear Starter.OS evidence identifies the system. The deterministic updater checks several independent Starter.OS markers and refuses an unrecognized folder. Never label an unrelated repository as Starter.OS or guess its baseline.
+Resolve the canonical repository's approved release to an immutable commit; match the manifest identity. Use a released source by default. An unreleased candidate requires an explicit choice before adding `--allow-unreleased` to apply.
 
-Updates require independent Git repositories for `os/` and `life/`, with no repository at the vault root or empty `biz/` container. If the owner uses another topology, preserve it first, then plan and approve the conversion before continuing.
+Inspect the installed root instructions and `os/release.json`. Recognized unversioned Starter.OS is supported conservatively; generic `os/` and `life/` folders do not prove its identity. An unrelated repository remains untouched. Check actual files, Git topology, and all relevant current work through `GIT-SETUP.md`. A read-only plan may identify issues before recovery exists, but no material target mutation is allowed until its recovery prerequisites are verified.
 
-Discover Git and protection for every in-scope repository. Inspect tracked, untracked, ignored, hidden, and external content. Stop for divergence, an unfinished Git operation, or unique unprotected work.
-
-Before planning any mutation:
-
-- create and read back a recovery commit in every affected repository;
-- verify each private hosted primary and enabled automatic mirror reaches that commit;
-- create a separate local recovery copy outside the working OS for anything Git does not cover;
-- record the exact restore route.
-
-Do not proceed until the complete current state is recoverable.
+Standard apply requires clean independent `os/` and `life/` repositories with readable commits. Preserve a different topology; do not rebuild it merely to run the updater. Prepare the separate local non-Git backup, hosted proof, and exact restore route before writes.
 
 ## 2. Review
 
-Create the deterministic plan outside the installed system:
+Compare the original installed release, the owner's current system, and the proposed release. The source manifest lists immutable historical baselines. The installed record retains hashes, source versions, original installation identity, and fork baselines where known. Missing historical evidence is uncertainty, never permission to infer an untouched file. Without a trusted installed record, the tool deliberately reports existing managed paths as conflicts. The agent must compare available immutable historical product bytes and read the owner's changes, then group verified stock replacements and preserved customizations into the one agreed plan. Do not turn the raw conflict list into a file-by-file owner interview or a blanket replacement command. When a baseline or personal meaning cannot be established, preserve it and propose adaptation or deferral.
+
+Create a deterministic proposal outside source and target:
 
 ```sh
 ruby setup/scripts/update-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/update-plan.json
 ```
 
-Critically review every proposed change and local customization. Follow the customized-instruction process in `QUICK-SETUP.md`, especially for large `AGENTS.md`, `CLAUDE.md`, or other controlling files.
+This is a full proposal, not an instruction to apply everything. Explain only meaningful improvements, behavior changes, dependencies, and genuine conflicts. The plan includes selected groups and a protected local inventory. Unknown and owner-owned files remain untouched.
 
-The private root `AGENTS.md` belongs to the owner. The plan may show `adopt-owner-entry` only when the current root entry is a recognized, untouched Starter.OS-managed file. That one-time action creates a short entry named from the private system folder. If the root entry was customized or its origin is uncertain, preserve it exactly and propose only specific routing changes that the owner must approve.
+Selected adoption is validated for 3.0 and 3.1 bases. Earlier versioned and unversioned bases use a full reviewed transition, or a separately reviewed agent adaptation; the tool refuses unvalidated partial combinations.
 
-Classify the plan in plain language:
+For selected improvements, create a new proposal using the groups declared in `setup/release-manifest.json`:
 
-- safe managed updates;
-- the one-time root ownership transfer, when safely recognized;
-- owner-owned and unknown files that remain untouched;
-- local customizations that need reconciliation;
-- new, moved, forked, deprecated, or unresolved material;
-- optional capabilities the owner's verified environment can support.
+```sh
+ruby setup/scripts/update-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/selected-plan.json --only news-report
+```
+
+Repeat `--only GROUP` for more groups. The tool includes declared dependencies and reports the actual selection. Current groups are `foundation`, `morning-brief`, `news-report`, `work-wrap`, `reconciliation`, and `security-watch`. Installing a recipe never enables a routine. The foundation is one coordinated group so its instructions, extension registry, and validator stay consistent. Partial adoption retains the previous base version and records the adopted group/source identity; it is not full release adoption.
+
+For extensive customization that cannot use this updater, stop the standard tool and propose a separate bounded adaptation of selected improvements within the owner's layout. Preserve and verify all affected content. Do not claim full version compatibility or silently change their structure. This is owner maintenance within Update, not a third installation route.
 
 ## 3. Ask
 
-Resolve routine safe changes from evidence. Ask only about genuine conflicts, unclear personal meaning, structural changes, missing protection, or optional routines.
+Agree on one compact implementation plan: relevant benefits, exact affected locations, preserved behavior, dependency groups, real conflicts, recovery, Git actions, and any cleanup. Reuse existing authority for that same reviewed scope. The owner can adopt, adapt, decline, or defer. Do not interview them about every file or repeat previously declined routine suggestions.
 
-For a managed-file conflict, offer:
+For a modified managed file, offer the smallest meaningful options:
 
-- **Reconcile.** Keep the useful personal meaning in the correct owner-controlled home and install the current Starter.OS file.
-- **Keep my version.** Preserve the local file in place and stop future automatic replacement. This does not apply to `os/manual.md` or the root `CLAUDE.md`; preserve either one at an approved owner-controlled fork destination, then restore the managed source.
-- **Replace with Starter.OS.** Install the reviewed Starter.OS file.
-- **Wait.** Leave the update incomplete.
+- Reconcile personal meaning into an owner-controlled home, then use the reviewed upstream version.
+- Keep the owner's version as an explicit fork.
+- Replace with the reviewed upstream file.
+- Defer the affected group or the update.
 
-Do not select a meaningful conflict for the owner. Show one shared approval card naming the target release, plan identity, protection, changes, conflict decisions, Git actions, routines, and cleanup. Wait for approval.
+Large customized instructions must be read for meaning, preserved fully, and never replaced by a summary. The owner root `AGENTS.md` is preserved byte for byte. Only a recognized untouched historical product root may receive its one-time ownership transfer. Existing forks can keep their baseline or explicitly rejoin upstream; relevant new upstream changes must be explained.
 
 ## 4. Improve
 
-Apply only the approved plan. The updater rechecks the source, target, and plan before writing.
+Apply only the agreed plan:
 
 ```sh
-ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/pre-update-root-backup
+ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/new-update-backup
 ```
 
-Use one exact option for each approved conflict:
+For each approved conflict or existing fork, use `--keep PATH`, `--replace PATH`, or `--fork SOURCE=DESTINATION`. A checksum match makes a managed file eligible, not authorized outside the plan. Source, target, plan, and inventory are rechecked before writes.
+
+`os/manual.md` and root `CLAUDE.md` cannot be kept as in-place forks. Preserve their customized text at an approved external owner location, for example:
 
 ```sh
-ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/pre-update-root-backup --keep path/to/local-file --replace path/to/managed-file
+ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/new-update-backup --fork os/manual.md=life/manual.md
 ```
 
-`--keep` records a fork. `--replace` installs the current managed file. `--fork SOURCE=DESTINATION` preserves a reviewed local version at an owner-controlled destination before restoring the managed source.
+A manual fork also adds its route to `os/me.md` within this transaction; include that owner-file addition in the approval. For the root adapter use `--fork CLAUDE.md=life/claude-entry.md`. Fork copies must stay inside `os/` or `life/`, the repositories covered by this transaction. No arbitrary owner file, Git metadata, generated release metadata, existing destination, or unselected artifact may be overwritten as a fork destination.
 
-The root `CLAUDE.md` adapter also may not remain as an in-place fork. Preserve an approved customized copy with `--fork CLAUDE.md=life/claude-entry.md`, then let the updater restore the shared root pointer.
+Keep the entire external transaction backup. No-change updates leave the installation and its dates untouched. Do not push until validation and preservation checks pass and publication is authorized.
 
-The protected manual may not remain as an in-place fork. If the owner wants its local explanation, use an approved destination such as:
+## 5. Prove, or restore
 
-```sh
-ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/pre-update-root-backup --fork os/manual.md=life/manual.md
-```
-
-The required root backup is a new folder outside the private OS and public source. The updater copies and reads back the non-repository root entry files there before writing anything. Keep it with the other recovery material until the owner accepts the update.
-
-Record the chosen manual fork in `os/me.md`. Never delete unknown or deprecated owner content. Never overwrite an owner-customized root `AGENTS.md`. Push only to each primary; verify automatic mirrors. Suggest only compatible recurring routines, let the owner adopt, decline, or defer each one, and never duplicate an equivalent.
-
-## 5. Prove
-
-Run:
+Run installed validation, compare the actual diff with the approved plan, and verify preserved owner meaning:
 
 ```sh
 ruby os/validate-starter-os.rb
 ```
 
-Compare the result with the protected inventory. The validator proves local structure, release identity, and readable local Git history. Separately verify and record each hosted primary, enabled mirror, uncovered-file backup, and rollback route. Confirm by review that no owner file or instruction disappeared. If any check fails, stop before another attempt. Restore `os/` and `life/` from their named commits, remove only new update or fork paths listed in the root-backup receipt, and restore `AGENTS.md` and `CLAUDE.md` from that receipt.
+The updater proves that only its declared writes changed the local inventory. The validator checks local contracts and reports owner notices. Neither proves hosted primaries, mirrors, external backups, schedules, or semantic meaning; verify those separately.
 
-Give one short receipt: previous and installed version, result, preserved and unresolved work, protection status, validation, optional routine outcomes, cleanup status, and rollback route. Keep the recovery copy until the owner accepts the result. Apply the public-source cleanup rules in `QUICK-SETUP.md` only after success.
+On interruption or failed checks, stop and inspect the complete recovery transaction:
+
+```sh
+ruby setup/scripts/restore-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/new-update-backup
+ruby setup/scripts/restore-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/new-update-backup
+```
+
+Apply restoration only with authority for that concrete plan. It verifies saved bytes, original repository commits, staged work, and changes since the transaction. It restores only transaction writes and removes only its own new paths/directories, then proves the full protected inventory matches. It refuses later owner edits, new files, changed commits, or altered backup bytes. Preserve that later work and agree on a recovery plan rather than bypassing the refusal. Restore does not rewind remote history. Re-run the restored version's validator and separately verify hosted state before resuming.
+
+Give one short receipt: previous base, adopted release or selected improvements, preserved work, choices/deferred changes, validation, actual protection, backup and rollback route, routine outcomes, and source cleanup. Keep recovery until the owner accepts the result. The goal is their working system improved through an understood plan.

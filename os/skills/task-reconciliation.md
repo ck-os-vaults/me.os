@@ -1,8 +1,8 @@
 ---
 type: skill
 created: 2026-08-30
-updated: 2026-09-03
-reviewed: 2026-09-03
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: living
 authority: canon
 source: ai
@@ -24,7 +24,7 @@ source: ai
 6. Return one concise input for the Chief of Staff home base or Morning Brief:
    - what materially changed;
    - what is waiting on the owner;
-   - the next one to three priorities and owners;
+   - confirmed next actions and owners; propose priorities only when requested;
    - durable records updated or still needing approval.
 
 ## recurring use

@@ -1,8 +1,8 @@
 ---
 type: recovery
 created: 2026-08-29
-updated: 2026-09-03
-reviewed: 2026-09-03
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: draft
 authority: canon
 source: ai
@@ -27,6 +27,7 @@ Use:
 - `configured but unverified`;
 - `incomplete; device loss not covered`;
 - `owner declined`;
+- `deferred`;
 - `unavailable`.
 
 GitHub is the normal guided primary for new owners. An existing suitable GitLab or other hosted primary may be preserved when the owner prefers it. Local-only Git is an incomplete recovery state, not a completed standard setup. Do not record credential-bearing URLs.
@@ -52,14 +53,14 @@ A planned layer is not a working backup. A successful upload is not a restore te
 5. For an update, give the updater a new root-backup folder outside both the private OS and public source. Confirm its receipt and root entry copies can be read before the updater writes anything.
 6. Read back the recovery evidence and explain the exact restore route before mutation.
 
-Do not proceed to review or mutation until the complete current state has a usable recovery route. Keep a pre-update recovery copy until validation succeeds and the owner accepts the result. An unrelated old repository stays untouched and backed up while selected context is brought into a separate new installation.
+Read-only review is allowed before recovery is complete. Do not proceed to mutation until the complete current state has a usable recovery route. Keep a pre-update recovery copy until validation succeeds and the owner accepts the result. An unrelated old repository stays untouched and backed up while selected context is brought into a separate new installation.
 
 ## Restore order
 
 1. Stop writes and identify the exact failed change.
 2. Preserve the current failed state for inspection when safe.
-3. Restore the affected repository from the named pre-change commit. Remove only new update or fork paths listed in the updater's root-backup receipt.
-4. Restore the root entry files from the updater's named root-backup receipt, then restore other uncovered content from the named full-file backup.
+3. Use the approved source's `setup/scripts/restore-vault.rb plan TARGET BACKUP` to verify the complete transaction and detect later work.
+4. After approval, use its `apply` mode. It restores recorded paths and verifies the protected inventory without resetting Git history. If it refuses, preserve later work and review a specific recovery plan; never force or discard to pass. Restore other uncovered content only from its separately verified backup.
 5. Recover service access through the credential manager, never from the vault.
 6. Run `validate-starter-os.rb`.
 7. Verify the primary and mirrors again before resuming work.

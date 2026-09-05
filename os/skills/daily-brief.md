@@ -1,8 +1,8 @@
 ---
 type: skill
 created: 2026-06-20
-updated: 2026-09-03
-reviewed: 2026-09-03
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: living
 authority: canon
 source: ai
@@ -18,7 +18,7 @@ Create a short plan that fits the owner's day and makes the next action clear.
 
 ## trigger
 
-Morning, start of work, an owner request for the day plan, or an accepted recurring Morning Brief.
+An owner request for a day plan or an accepted recurring Morning Brief. Morning or the start of work alone is not a trigger.
 
 ## steps
 
@@ -26,7 +26,7 @@ Morning, start of work, an owner request for the day plan, or an accepted recurr
 2. Use `task-reconciliation.md` to include only material cross-project changes since the last checkpoint.
 3. Separate fixed commitments from flexible work and note any conflict or unverified source plainly.
 4. Select no more priorities than the owner approved and give each one concrete next action.
-5. End with a few short questions about energy, personal constraints, new tasks, or changed direction. Distill the answers back into the persistent Chief of Staff home base and the correct durable owner file only when warranted.
+5. Ask only necessary questions the owner has welcomed about constraints or changed direction; do not require a daily questionnaire. Distill the answers back into the persistent Chief of Staff home base and the correct durable owner file only when warranted.
 
 ## outputs
 

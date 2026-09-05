@@ -6,6 +6,7 @@ require "json"
 require "open3"
 require "pathname"
 require "time"
+require_relative "update-support"
 
 SOURCE_ROOT = Pathname.new(File.expand_path("../..", __dir__)).realpath
 MANIFEST_PATH = SOURCE_ROOT.join("setup", "release-manifest.json")
@@ -23,7 +24,7 @@ def safe_relative(raw, label = "path")
   stop("#{label} is blank") if value.empty?
   path = Pathname.new(value)
   clean = path.cleanpath.to_s
-  stop("#{label} is unsafe: #{value}") if path.absolute? || clean == ".." || clean.start_with?("../") || clean != value
+  stop("#{label} is unsafe: #{value}") if path.absolute? || clean == "." || clean == ".." || clean.start_with?("../") || clean != value || value.split("/").any? { |part| part.downcase == ".git" }
   clean
 end
 
@@ -73,13 +74,9 @@ end
 
 def safe_target(root, relative)
   relative = safe_relative(relative)
-  stop("target root is a symbolic link") if root.symlink?
-  current = root
-  Pathname.new(relative).each_filename do |part|
-    current = current.join(part)
-    stop("target path crosses a symbolic link: #{relative}") if current.symlink?
-  end
-  current
+  UpdateSupport.safe(root, relative)
+rescue RuntimeError => error
+  stop(error.message)
 end
 
 
@@ -102,6 +99,8 @@ end
 
 def load_manifest
   stop("release manifest is missing; run ruby setup/scripts/build-release-manifest.rb") unless MANIFEST_PATH.file?
+  checked, status = Open3.capture2e("ruby", SOURCE_ROOT.join("setup/scripts/validate-source.rb").to_s)
+  stop("source integrity check failed: #{checked.strip}") unless status.success?
   manifest = JSON.parse(MANIFEST_PATH.read)
   stop("unsupported release manifest") unless manifest["format"] == 1 && manifest["product"] == "Starter.OS"
   manifest.fetch("artifacts").each do |artifact|
@@ -113,8 +112,9 @@ def load_manifest
 end
 
 def load_release_record(target)
-  path = target.join("os", "release.json")
-  return nil unless path.file?
+  path = safe_target(target, "os/release.json")
+  return nil unless path.exist?
+  stop("installed release record must be a regular file") unless path.file?
   record = JSON.parse(path.read)
   stop("unsupported installed release record") unless record["format"] == 1 && record["product"] == "Starter.OS"
   record
@@ -140,6 +140,7 @@ rescue ArgumentError
 end
 
 def ensure_update_git_ready(target)
+  stop("vault root and biz container must not be Git repositories") if target.join(".git").exist? || target.join("biz/.git").exist?
   %w[os life].each do |name|
     repository = target.join(name)
     top, top_status = Open3.capture2e("git", "-C", repository.to_s, "rev-parse", "--show-toplevel")
@@ -161,7 +162,7 @@ def ensure_update_git_ready(target)
     stop("cannot inspect the #{name}/ Git operation state") unless git_dir_status.success?
     resolved_git_dir = Pathname.new(git_dir.strip)
     resolved_git_dir = repository.join(resolved_git_dir) unless resolved_git_dir.absolute?
-    %w[MERGE_HEAD REBASE_HEAD CHERRY_PICK_HEAD REVERT_HEAD].each do |marker|
+    %w[MERGE_HEAD REBASE_HEAD CHERRY_PICK_HEAD REVERT_HEAD rebase-merge rebase-apply sequencer].each do |marker|
       stop("#{name}/ has a Git operation in progress: #{marker}") if resolved_git_dir.join(marker).exist?
     end
 
@@ -171,12 +172,29 @@ def ensure_update_git_ready(target)
   end
 end
 
-def build_plan(target, manifest)
+def selected_groups(manifest, requested)
+  groups = manifest.fetch("update_groups")
+  selected = requested.empty? ? groups.keys : requested.uniq
+  stop("unknown update groups: #{(selected - groups.keys).join(', ')}") unless (selected - groups.keys).empty?
+  loop do
+    expanded = (selected + selected.flat_map { |name| groups.fetch(name).fetch("requires") }).uniq
+    break if expanded == selected
+    stop("release declares an unknown dependency") unless (expanded - groups.keys).empty?
+    selected = expanded
+  end
+  selected.sort
+end
+
+def build_plan(target, manifest, requested = [])
   installed = load_release_record(target)
   stop("target is not a recognized unversioned Starter.OS; leave it untouched and create a new installation separately") if installed.nil? && !recognized_unversioned_starter?(target)
   installed_version = installed ? installed.fetch("version") : "unversioned-legacy"
   supported_updates = manifest.fetch("supported_updates", [])
   stop("unsupported update path: #{installed_version} -> #{manifest.fetch('version')}") unless supported_updates.include?(installed_version)
+  groups = selected_groups(manifest, requested)
+  full = groups == manifest.fetch("update_groups").keys.sort
+  stop("selective adoption requires a versioned installation; review a full legacy plan first") unless installed || full
+  stop("selected adoption is not validated from #{installed_version}; review a full plan or owner-approved adaptation") unless full || manifest.fetch("supported_partial_updates", []).include?(installed_version)
   prior = installed ? installed.fetch("artifacts", {}) : {}
   entries = []
   current_paths = {}
@@ -212,8 +230,19 @@ def build_plan(target, manifest)
         ["conflict", previous ? "managed file changed locally" : "legacy installation has no trusted managed baseline"]
       end
 
+    group = artifact.fetch("update_group")
+    unless groups.include?(group)
+      action, reason = ["not-selected", "outside the proposed adoption scope; preserve"]
+    end
+    if previous && ownership == "managed" && previous["ownership"] == "owner-owned"
+      stop("release attempts to take ownership of #{path}; explicit migration is required") if groups.include?(group)
+    end
     entries << {
       "path" => path,
+      "group" => group,
+      "baseline_sha256" => previous && previous["upstream_sha256"],
+      "baseline_version" => previous && previous["source_version"],
+      "upstream_changed" => previous && (previous.dig("last_reviewed_upstream", "sha256") || previous["upstream_sha256"]) != artifact.fetch("sha256"),
       "source" => artifact.fetch("source"),
       "ownership" => ownership,
       "action" => action,
@@ -248,6 +277,10 @@ def build_plan(target, manifest)
     "target_root" => target.to_s,
     "installed_version" => installed_version,
     "target_version" => manifest.fetch("version"),
+    "selected_groups" => groups,
+    "adoption" => full ? "full" : "partial",
+    "inventory" => UpdateSupport.inventory(target),
+    "installed_record_sha256" => target.join("os/release.json").file? ? sha256(safe_target(target, "os/release.json")) : nil,
     "entries" => entries.sort_by { |entry| entry["path"] }
   }
 end
@@ -258,16 +291,29 @@ def print_summary(plan)
   counts.sort.each { |action, count| puts "- #{action}: #{count}" }
   conflicts = plan.fetch("entries").select { |entry| entry["action"] == "conflict" }
   conflicts.each { |entry| puts "  conflict #{entry.fetch('path')}: #{entry.fetch('reason')}" }
+  puts "Scope: #{plan.fetch('adoption')} — #{plan.fetch('selected_groups').join(', ')}"
+  plan.fetch("entries").select { |entry| entry["action"] == "forked" && entry["upstream_changed"] }.each do |entry|
+    puts "  upstream improvement available for owner fork: #{entry.fetch('path')} (kept unless explicitly reconciled)"
+  end
 end
 
+allow_unreleased = !!ARGV.delete("--allow-unreleased")
 command = ARGV.shift
 manifest = load_manifest
+if command == "apply" && manifest["status"] != "released" && !allow_unreleased
+  stop("this source is an unreleased candidate; use an approved released source or explicitly approve --allow-unreleased")
+end
 
 case command
 when "plan"
   target_raw = ARGV.shift
   output_raw = ARGV.shift
-  stop("usage: update-vault.rb plan TARGET PLAN.json") if target_raw.to_s.empty? || output_raw.to_s.empty? || !ARGV.empty?
+  stop("usage: update-vault.rb plan TARGET PLAN.json [--only GROUP]") if target_raw.to_s.empty? || output_raw.to_s.empty?
+  requested = []
+  until ARGV.empty?
+    stop("plan accepts only --only GROUP") unless ARGV.shift == "--only"
+    requested << ARGV.shift.to_s
+  end
 
   target_path = Pathname.new(File.expand_path(target_raw))
   output = canonical_new_path(Pathname.new(File.expand_path(output_raw)), "plan output")
@@ -276,7 +322,8 @@ when "plan"
   stop("target must be outside the public source") if inside?(target, SOURCE_ROOT) || inside?(SOURCE_ROOT, target)
   stop("plan output must be outside the installed vault") if inside?(output, target)
 
-  plan = build_plan(target, manifest)
+  stop("plan output must be outside the public source") if inside?(output, SOURCE_ROOT)
+  plan = build_plan(target, manifest, requested)
   output.dirname.mkpath
   output.write("#{JSON.pretty_generate(plan)}\n")
   print_summary(plan)
@@ -328,8 +375,8 @@ when "apply"
   stop("public release manifest changed after planning") unless plan["source_manifest_sha256"] == sha256(MANIFEST_PATH)
   stop("plan targets a different release") unless plan["target_version"] == manifest["version"]
 
-  expected_plan = build_plan(target, manifest)
-  comparable_fields = %w[source_root source_manifest_sha256 target_root installed_version target_version entries]
+  expected_plan = build_plan(target, manifest, plan.fetch("selected_groups"))
+  comparable_fields = %w[source_root source_manifest_sha256 target_root installed_version target_version entries selected_groups adoption inventory installed_record_sha256]
   unless comparable_fields.all? { |field| plan[field] == expected_plan[field] }
     stop("plan contents do not match the current source and target; create and review a new plan")
   end
@@ -348,7 +395,7 @@ when "apply"
   choices = keep + replace + forks.keys
   stop("a path has more than one conflict choice") unless choices.uniq.length == choices.length
   choices.each do |path|
-    stop("choice does not name a planned conflict: #{path}") unless by_path[path] && by_path[path]["action"] == "conflict"
+    stop("choice does not name a planned conflict: #{path}") unless by_path[path] && %w[conflict forked].include?(by_path[path]["action"])
   end
   choices.each do |path|
     next if by_path.fetch(path)["target_exists"]
@@ -356,13 +403,15 @@ when "apply"
   end
   stop("use --fork os/manual.md=life/manual.md instead of keeping the protected manual in place") if keep.include?("os/manual.md")
   stop("use --fork CLAUDE.md=life/claude-entry.md instead of keeping the root Claude adapter in place") if keep.include?("CLAUDE.md")
-  stop("two forks may not use the same destination") unless forks.values.uniq.length == forks.values.length
+  stop("two forks may not use the same destination") unless forks.values.map(&:downcase).uniq.length == forks.values.length
 
   conflicts = entries.select { |entry| entry["action"] == "conflict" }.map { |entry| entry["path"] }
   unresolved = conflicts - choices
   stop("conflicts need an approved --keep, --replace, or --fork choice: #{unresolved.join(', ')}") unless unresolved.empty?
 
   prepared_forks = forks.map do |source, destination|
+    stop("fork destination must be inside the protected os/ or life/ repository") unless destination.start_with?("os/", "life/")
+    stop("fork destination conflicts with generated release metadata") if manifest.fetch("generated").any? { |artifact| artifact.fetch("path").downcase == destination.downcase }
     destination_path = safe_target(target, destination)
     stop("fork destination already exists: #{destination}") if destination_path.exist?
     stop("fork destination conflicts with a managed release path: #{destination}") if by_path.key?(destination)
@@ -371,122 +420,104 @@ when "apply"
     [source_path, destination_path]
   end
 
-  planned_new_paths = entries.select do |entry|
+  previous_record = load_release_record(target)
+  previous_artifacts = previous_record ? previous_record.fetch("artifacts", {}) : {}
+  if choices.empty? && plan["adoption"] == "full" && plan["installed_version"] == manifest["version"] && entries.all? { |entry| %w[unchanged preserve forked deprecated-preserve].include?(entry["action"]) }
+    puts "No changes: the installed release is current; owner files and forks remain untouched."
+    exit 0
+  end
+
+  writes = {}
+  prepared_forks.each do |source_path, destination_path|
+    writes[destination_path.relative_path_from(target).to_s] = { "bytes" => source_path.binread, "mode" => source_path.stat.mode & 0o777 }
+  end
+  manifest_by_path = manifest.fetch("artifacts").to_h { |artifact| [artifact.fetch("path"), artifact] }
+  entries.each do |entry|
     path = entry.fetch("path")
     install = %w[add add-seed update adopt-owner-entry].include?(entry.fetch("action")) || replace.include?(path) || forks.key?(path)
-    install && !entry["target_exists"]
-  end.map { |entry| entry.fetch("path") }
-  new_paths = (planned_new_paths + forks.values).uniq.sort
+    next unless install
+    artifact = manifest_by_path.fetch(path)
+    source = safe_source(safe_relative(artifact.fetch("source"), "artifact source"))
+    writes[path] = { "bytes" => artifact_bytes(source, artifact, target), "mode" => source.stat.mode & 0o777 }
+  end
+
+  # Record routing for a copied manual in owner context as part of this exact transaction.
+  if forks.key?("os/manual.md")
+    owner_context = safe_target(target, "os/me.md")
+    bytes = owner_context.binread
+    destination = forks.fetch("os/manual.md")
+    bytes += "\nManual fork: #{destination}. Created through the approved update plan.\n" unless bytes.include?(destination)
+    writes["os/me.md"] = { "bytes" => bytes }
+  end
+
+  release_artifacts = previous_artifacts.dup
+  manifest.fetch("artifacts").each do |artifact|
+    path = artifact.fetch("path")
+    next if by_path.fetch(path)["action"] == "not-selected"
+    previous = previous_artifacts[path]
+    forked = keep.include?(path) || (previous && previous["ownership"] == "forked" && !replace.include?(path) && !forks.key?(path))
+    digest = writes.key?(path) ? Digest::SHA256.hexdigest(writes[path].fetch("bytes")) : file_state(safe_target(target, path))["sha256"]
+    record = {
+      "ownership" => forked ? "forked" : artifact.fetch("ownership"),
+      "sha256" => digest,
+      "upstream_sha256" => forked && previous ? previous["upstream_sha256"] : artifact.fetch("sha256"),
+      "source_version" => forked && previous ? previous["source_version"] : manifest.fetch("version")
+    }
+    if forked
+      record["fork_base"] = previous && previous["fork_base"] || {
+        "sha256" => previous && previous["upstream_sha256"],
+        "version" => previous && previous["source_version"],
+        "manifest_sha256" => previous_record && previous_record["manifest_sha256"]
+      }
+      record["available_upstream"] = { "version" => manifest.fetch("version"), "sha256" => artifact.fetch("sha256") }
+      record["last_reviewed_upstream"] = keep.include?(path) ? record["available_upstream"] : previous && previous["last_reviewed_upstream"]
+    end
+    release_artifacts[path] = record
+  end
+  retained_forks = previous_record ? previous_record.fetch("forks", []) : []
+  retained_forks = retained_forks.reject { |record| forks.key?(record["source"]) }
+  new_forks = forks.map do |source, destination|
+    { "source" => source, "destination" => destination,
+      "sha256" => Digest::SHA256.hexdigest(writes.fetch(destination).fetch("bytes")),
+      "baseline" => previous_artifacts[source], "upstream_version_at_copy" => manifest.fetch("version") }
+  end
+  full = plan.fetch("adoption") == "full"
+  now = Time.now.utc.iso8601
+  release_record = (previous_record || {}).merge(
+    "format" => 1, "product" => "Starter.OS",
+    "version" => full ? manifest.fetch("version") : plan.fetch("installed_version"),
+    "installed_at" => previous_record ? previous_record["installed_at"] : nil,
+    "updated_at" => now,
+    "installed_source" => previous_record && previous_record["installed_source"] || { "version" => plan.fetch("installed_version"), "manifest_sha256" => previous_record && previous_record["manifest_sha256"] },
+    "manifest_sha256" => full ? sha256(MANIFEST_PATH) : previous_record["manifest_sha256"],
+    "artifacts" => release_artifacts, "forks" => retained_forks + new_forks,
+    "adoption" => { "kind" => plan.fetch("adoption"), "offered_version" => manifest.fetch("version"), "groups" => plan.fetch("selected_groups"), "manifest_sha256" => sha256(MANIFEST_PATH) },
+    "deprecated_preserved" => entries.select { |entry| entry["action"] == "deprecated-preserve" && entry["target_exists"] }.map { |entry| entry["path"] }
+  )
+  safe_target(target, "os/release.json")
+  writes["os/release.json"] = { "bytes" => "#{JSON.pretty_generate(release_record)}\n" }
 
   stop("--root-backup DIR is required so non-repository root entry files can be restored") unless root_backup_raw
   root_backup = canonical_new_path(Pathname.new(File.expand_path(root_backup_raw)), "root backup")
   stop("root backup must be outside the installed vault") if inside?(root_backup, target) || inside?(target, root_backup)
   stop("root backup must be outside the public source") if inside?(root_backup, SOURCE_ROOT) || inside?(SOURCE_ROOT, root_backup)
-  FileUtils.mkdir_p(root_backup)
+  FileUtils.mkdir_p(root_backup, mode: 0o700)
   stop("root backup changed while it was being created") unless root_backup.realpath == root_backup
-
-  root_files = manifest.fetch("artifacts").map { |artifact| artifact.fetch("path") }.select { |path| !path.include?("/") }.sort
-  backup_files = root_files.map do |path|
-    source_path = safe_target(target, path)
-    unless source_path.exist?
-      next { "path" => path, "existed" => false, "sha256" => nil }
-    end
-    stop("root entry is not a regular file: #{path}") unless source_path.file? && !source_path.symlink?
-    backup_path = root_backup.join(path)
-    FileUtils.cp(source_path, backup_path, preserve: true)
-    digest = sha256(source_path)
-    stop("root backup read-back failed: #{path}") unless sha256(backup_path) == digest
-    { "path" => path, "existed" => true, "sha256" => digest }
-  end
-  backup_receipt = {
-    "format" => 1,
-    "product" => "Starter.OS root backup",
-    "created_at" => Time.now.utc.iso8601,
-    "target_root" => target.to_s,
-    "installed_version" => plan.fetch("installed_version"),
-    "target_version" => plan.fetch("target_version"),
-    "files" => backup_files,
-    "new_paths" => new_paths
-  }
-  receipt_path = root_backup.join("receipt.json")
-  receipt_path.write("#{JSON.pretty_generate(backup_receipt)}\n")
-  read_back_receipt = JSON.parse(receipt_path.read)
-  stop("root backup receipt read-back failed") unless read_back_receipt == backup_receipt
-
-  prepared_forks.each do |source_path, destination_path|
-    FileUtils.mkdir_p(destination_path.dirname)
-    FileUtils.cp(source_path, destination_path, preserve: true)
+  begin
+    stop("target changed after review") unless UpdateSupport.inventory(target) == plan.fetch("inventory")
+    receipt = UpdateSupport.prepare(target, root_backup, writes, plan)
+    UpdateSupport.apply(target, root_backup, receipt)
+  rescue StandardError => error
+    stop("#{error.message}; preserve the transaction and review restore-vault.rb plan TARGET #{root_backup}")
   end
 
-  manifest_by_path = manifest.fetch("artifacts").to_h { |artifact| [artifact.fetch("path"), artifact] }
-  entries.each do |entry|
-    path = entry.fetch("path")
-    action = entry.fetch("action")
-    install = %w[add add-seed update adopt-owner-entry].include?(action) || replace.include?(path) || forks.key?(path)
-    next unless install
-    artifact = manifest_by_path.fetch(path)
-    source = safe_source(safe_relative(artifact.fetch("source"), "artifact source"))
-    target_path = safe_target(target, path)
-    FileUtils.mkdir_p(target_path.dirname)
-    if artifact["render"]
-      File.binwrite(target_path, artifact_bytes(source, artifact, target))
-    else
-      FileUtils.cp(source, target_path, preserve: true)
-    end
-  end
-
-  previous_record = load_release_record(target)
-  previous_artifacts = previous_record ? previous_record.fetch("artifacts", {}) : {}
-  release_artifacts = {}
-  manifest.fetch("artifacts").each do |artifact|
-    path = artifact.fetch("path")
-    target_path = safe_target(target, path)
-    state = file_state(target_path)
-    previous = previous_artifacts[path]
-    ownership =
-      if keep.include?(path) || (previous && previous["ownership"] == "forked" && !replace.include?(path) && !forks.key?(path))
-        "forked"
-      else
-        artifact.fetch("ownership")
-      end
-    release_artifacts[path] = {
-      "ownership" => ownership,
-      "sha256" => state["sha256"],
-      "upstream_sha256" => artifact.fetch("sha256"),
-      "source_version" => manifest.fetch("version")
-    }
-  end
-
-  retained_forks = previous_record ? previous_record.fetch("forks", []) : []
-  retained_forks = retained_forks.reject { |record| forks.key?(record["source"]) }
-  new_forks = forks.map do |source, destination|
-    {
-      "source" => source,
-      "destination" => destination,
-      "sha256" => sha256(safe_target(target, destination))
-    }
-  end
-
-  release_record = {
-    "format" => 1,
-    "product" => "Starter.OS",
-    "version" => manifest.fetch("version"),
-    "installed_at" => Time.now.utc.iso8601,
-    "manifest_sha256" => sha256(MANIFEST_PATH),
-    "artifacts" => release_artifacts,
-    "forks" => retained_forks + new_forks,
-    "deprecated_preserved" => entries.select { |entry| entry["action"] == "deprecated-preserve" && entry["target_exists"] }.map { |entry| entry["path"] }
-  }
-  target.join("os", "release.json").write("#{JSON.pretty_generate(release_record)}\n")
-
-  applied_plan = build_plan(target, manifest)
+  applied_plan = build_plan(target, manifest, plan.fetch("selected_groups"))
   remaining_conflicts = applied_plan.fetch("entries").select { |entry| entry["action"] == "conflict" }
-  stop("post-apply state still has conflicts: #{remaining_conflicts.map { |entry| entry['path'] }.join(', ')}") unless remaining_conflicts.empty?
-
+  stop("post-apply state still has conflicts; restore from #{root_backup}") unless remaining_conflicts.empty?
   print_summary(applied_plan)
-  puts "Applied Starter.OS #{manifest.fetch('version')}"
-  puts "Root entry backup: #{root_backup}"
-  puts "Next: run ruby os/validate-starter-os.rb, review the diff, commit to the primary, and verify every enabled mirror"
+  puts full ? "Applied Starter.OS #{manifest.fetch('version')} with owner content preserved" : "Applied selected #{manifest.fetch('version')} improvements; base release remains #{plan.fetch('installed_version')}"
+  puts "Recovery transaction: #{root_backup}"
+  puts "Next: validate the installed system, review the diff, and verify approved hosted protection separately"
 
 else
   stop("usage: update-vault.rb plan TARGET PLAN.json | apply TARGET PLAN.json --root-backup DIR [choices]")

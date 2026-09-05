@@ -8,7 +8,47 @@ Changes being developed belong under **Unreleased**. When a release is approved,
 
 ## [Unreleased]
 
-Starter.OS 3.0.0 is being prepared with two guided paths, an owner-named private identity, and stricter recovery and Git checks. Move this section into a dated 3.0.0 release only when the final commit and tag are published together.
+Starter.OS 3.1.0 is an unreleased candidate distributed on main for owner testing. It has not been tagged or formally released. An approved released source is the normal owner path; candidate writes require an explicit choice.
+
+### Added
+
+- Owner-directed full or selected improvement plans with explicit source and inventory checks. Selected adoption records its scope without advancing the base version to a fully adopted release.
+- Owner-owned skill registry, preserving personal workflows without editing the managed product map.
+- Complete external update transactions and a deterministic restore preview/apply workflow that protects later owner work.
+- Explicit update support for the actual distributed 3.0 candidate, in addition to declared historical sources.
+- Foundation-only validation for a new owner's explicit Git deferral, with accurate protection notices.
+
+### Changed
+
+- Setup lays a verified foundation and offers optional suggestions. A task, example project, exercise, or automation is never required.
+- Private Git protection is recommended early; existing suitable hosts and explicit declines/deferrals are respected.
+- The README is the owner entry. Setup now has three guides: installation, updates, and shared Git/recovery. Unique content and routes from the two retired guides are consolidated there.
+- Personal planning, browser choice, and agent configuration follow the owner's actual preferences and capabilities.
+- Validation distinguishes preserved owner layouts/settings from unsafe or incomplete state. Product content remains protected.
+- Security intake distinguishes passive reading, adoption, and execution.
+
+### Fixed
+
+- Generated release metadata receives the same safe-path checks as other update writes.
+- Existing forks can explicitly rejoin the product version and retain their original baseline for comparison.
+- Installation dates survive updates, and no-change updates leave files untouched.
+- A minor-version bump cannot silently remove 3.0 from the declared transition list.
+
+### Compatibility and limitations
+
+- Standard apply requires independent readable Git history for `os/` and `life/`. A different structure needs an owner-approved adaptation plan rather than a forced rebuild.
+- Selected groups use declared dependencies; arbitrary feature-by-feature semantic merging is agent-assisted and requires review.
+- Atomic writes protect individual files; interrupted multi-file updates use the complete recovery transaction.
+- Local tools do not certify hosted backups, schedulers, every model/harness, or human usability. Those require separate release acceptance evidence.
+- Normal installed validation still requires Git. `--foundation` explicitly reports a limited foundation check and never means fully protected setup.
+
+### Updating and rollback
+
+Start from the canonical repository link and follow `setup/UPDATE.md`. Review the owner's current system and agree on the improvement plan. Do not apply a new release merely because it exists. Verify recovery before mutation, validate after apply, and preserve the external transaction until accepted. Use `restore-vault.rb plan` before any approved restoration; it refuses changed backup bytes or later owner work.
+
+## [3.0.0 candidate]
+
+The candidate source was distributed on main at `01f60e03b4ad22b4f9135051df57d73f8a7701f4`. It had no 3.0 version tag or GitHub Release at the September 5 review. The entries below describe that candidate; they do not invent a formal release date.
 
 ### Added
 
@@ -156,6 +196,6 @@ Before apply, record and verify the exact local Git recovery commit for every af
 
 If validation fails, stop. Restore the affected repository from the named pre-update commit, restore uncovered content from its named backup, run `ruby os/validate-starter-os.rb`, and verify the primary and mirrors before resuming work.
 
-[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/01f60e03b4ad22b4f9135051df57d73f8a7701f4...HEAD
 [2.1.0]: https://github.com/ck-os-vaults/starter-os-public/compare/bb7d3c744348c933b03181a7dffa0b6a8c8701ca...v2.1.0
 [2.0.0]: https://github.com/ck-os-vaults/starter-os-public/commit/bb7d3c744348c933b03181a7dffa0b6a8c8701ca

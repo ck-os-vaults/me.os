@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-08-29
-updated: 2026-08-30
-reviewed: 2026-08-30
+updated: 2026-09-05
+reviewed: 2026-09-05
 status: living
 authority: canon
 source: ai
@@ -21,7 +21,7 @@ source: ai
 - Retrieval and metadata: `retrieval.md`
 - Git, backup, and restore: `recovery.md`
 - External systems and scheduled routines: `integrations.md`
-- Portable workflows and classifications: `skill-map.md`
+- Portable workflows and classifications: `skill-map.md` and owner-owned `owner-skills.md`
 - Installed Starter.OS version and managed-file identities: `release.json`
 - Personal work: `../life/knowledge-map.md`
 - Business work: `../biz/<business>/AGENTS.md`

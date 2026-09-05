@@ -1,103 +1,57 @@
-# Create a new private OS
+# Establish a private foundation
 
-> **Audience: Agent only.** The owner normally starts by providing the public repository link. Read `START-HERE.md`, `QUICK-SETUP.md`, and `GIT-SETUP.md`.
-
-Create a private system without leaving setup files inside it. Guide the owner through **Name → Protect → Create → Personalize → Prove**.
+> **Audience: Agent only.** The owner starts with the public link, optionally asking which install fits. Read the public `AGENTS.md`, `readme.md`, and the shared `GIT-SETUP.md`. Explain choices briefly; perform the technical work within approved capabilities.
 
 ## 1. Name
 
-Infer the private system name and destination. The folder name is the system name, including its `.OS` ending. Show the exact name, capitalization, and location for approval.
+Inspect existing systems, approved private file access, Git, and the Ruby runtime. Confirm the owner-chosen name and empty destination ending in `.os` (case is preserved). The folder name becomes the private system's name. Use Update for a recognized Starter.OS. Leave an unrelated repository untouched and choose a separate empty location.
 
-The finished system belongs to the owner. Do not call it Starter.OS after installation. Starter.OS remains only the upstream framework used for later updates.
+Collect only the name, destination, and immediately useful confirmed preferences. Do not require a project, first task, example exercise, or architecture label.
 
 ## 2. Protect
 
-Verify this is the public Starter.OS source and run:
+Validate the selected source:
 
 ```sh
 ruby setup/scripts/validate-source.rb
 ```
 
-Refuse a non-empty destination. If it is an existing Starter.OS, use `UPDATE.md`. If it is anything else, leave it untouched and create the new OS in a separate empty location. Never personalize the public source.
+Follow `GIT-SETUP.md`: discover Git and current recovery, explain the recommended private primary, and establish approved account/repository access early. GitHub is the guided default, not a mandatory provider. Preserve an existing suitable host. Let the owner decline or defer protection; state the limitation once and record it.
 
-### Discover Git and recovery
+Show one compact plan: exact name and destination, private repository actions, privacy, protection or declined coverage, and what files setup will create. Reuse approval for those same actions. Request another decision only if new evidence changes the scope. The owner handles sign-in privately; never ask for secrets in chat.
 
-Follow the Git discovery in `QUICK-SETUP.md`. A first-time owner may already have repositories, accounts, preferred providers, or backup tools. Preserve them and avoid duplicate accounts or repositories.
-
-Propose separate Git repositories for `os/` and `life/`. Every real `biz/<business>/` becomes its own repository when created. The vault root and empty `biz/` folder stay plain so repositories do not become accidentally nested.
-
-Require one private hosted primary per repository for the completed standard path. If the owner does not already have a suitable private Git host, guide secure GitHub account setup and private repository creation before adoption. Preserve an existing GitLab or other suitable hosted primary when the owner prefers it. A local-only recovery commit is a temporary incomplete state, not completed protection. Any second Git service must be an automatic mirror configured from the primary; agents push only to the primary.
-
-Review the proposed name, location, folder structure, Git setup, privacy, recovery, and available tools. Check which optional recurring workflows the owner's scheduler, sources, and destinations can support.
-
-Do not invent projects, businesses, interests, folders, integrations, or recurring routines.
-
-Show one short approval card with the exact name, destination, private Git plan, optional routines, and any old repository that will remain untouched. Wait for approval before creating anything. Silence is not approval.
+Use an approved released source by default. A candidate needs an explicit owner choice and `--allow-unreleased` on creation. Do not infer approval from its presence on main.
 
 ## 3. Create
 
-### Create the private preview
-
-Only after approval:
+After approval, create the minimal scaffold:
 
 ```sh
 ruby setup/scripts/create-vault.rb /absolute/path/to/NAME.os
 ```
 
-The preview contains the owner's named root entry, `os/`, `life/`, and an empty `biz/`. It does not contain `setup/`. The root `AGENTS.md` is owner-owned from creation and must not be replaced during future Starter.OS updates. Keep that root entry short: lasting owner facts and rules belong in `os/me.md` or the correct Git-protected project or business home. Because the vault root is not a Git repository, include its entry files in the full-file backup recorded in `os/recovery.md`.
+The private root contains owner-named `AGENTS.md`, a thin `CLAUDE.md` pointer, `os/`, `life/`, and empty `biz/`. No `setup/` is installed. The root entry belongs to the owner. Keep it short and put lasting owner facts in Git-protected context; include root entries in full-file backup.
 
-Show the root folders, installed Starter.OS version, and files that personalization would change. Ask for final adoption confirmation. This confirms the preview. It is not a second interview.
+Immediately initialize the approved independent `os/` and `life/` repositories, review the baseline for private/secret material, commit, read back the recovery commits, and verify the approved private hosted copies. Do this before substantial personalization. The initial files must exist before their first commit can be verified. If protection was declined, do not initialize or publish anyway.
 
-### Establish Git protection
-
-Follow `GIT-SETUP.md`:
-
-1. initialize only the approved repositories that do not already exist;
-2. review privacy and secret checks;
-3. create and verify a baseline commit in the working repository;
-4. create or connect the approved private primary;
-5. verify visibility before personal content is pushed;
-6. push only to the primary;
-7. configure an approved secondary as an automatic mirror;
-8. verify exact commit parity;
-9. record every layer truthfully.
-
-Account creation, sign-in, repository creation, visibility changes, publication, and mirror configuration require owner approval.
+The approved plan already authorizes adoption of this same scaffold; do not add a second adoption interview.
 
 ## 4. Personalize
 
-After adoption, add only confirmed context:
+Add only confirmed context:
 
-- stable collaboration context -> `os/me.md`;
-- current personal state -> `life/now.md`;
-- durable personal background -> `life/wiki/owner.md` (personalize the contents, not the path);
-- real personal projects -> `os/scripts/add-project.rb`;
-- real businesses -> `os/scripts/add-business.rb`, followed by independent Git and private-primary verification for that business;
-- actual integrations and automation status -> `os/integrations.md`;
-- chosen Git topology and recovery state -> `os/recovery.md`.
+- Collaboration preferences and chosen Chief name: `os/me.md`.
+- Personal state, if supplied: `life/now.md`.
+- Durable background, if supplied: `life/wiki/owner.md`; keep the path.
+- Personal reusable skills: `os/skills/`, registered in owner-owned `os/owner-skills.md`.
+- Actual capabilities and optional routines: `os/integrations.md`.
+- Verified, declined, deferred, or missing protection: `os/recovery.md`.
 
-Do not edit `os/manual.md`. It is the protected product explanation layer. An owner who wants a personalized manual may explicitly create an owner-owned fork as described in the manual.
+Never edit managed files just to personalize them, including `os/manual.md` and the product skill map. Owner-specific methods have their own homes. Projects and businesses are created later on request through the installed helpers; each real business needs its own protection.
 
-### Guide optional recurring workflows
+Offer only a few relevant optional improvements. The owner may adopt, decline, or defer. Use existing choices and actual repository, runtime persistence, scheduler, source-access, and delivery capabilities; do not inventory unavailable services just to fill a form. Accepted recurring work follows its portable recipe, returns to an existing home when supported, and is separately verified. Never create an automation just because a recipe exists.
 
-Use the shared recurring-workflow contract in `QUICK-SETUP.md`.
-
-Suggest only compatible recipes. If accepted, create or update each in the owner's chosen scheduler, using the matching portable skill. Verify the full configuration. If declined, deferred, or unavailable, record the truthful status without blocking setup.
-
-### Optional: bring over what matters
-
-If the owner has another repository, offer this only after the new OS works:
-
-1. verify the old repository remains unchanged and backed up;
-2. review it read-only;
-3. copy only the context the owner still wants into the proper owner-owned location;
-4. reconcile old instructions by meaning without replacing the new root `AGENTS.md`;
-5. validate again;
-6. keep the old repository as an archive until the owner separately approves any deletion.
-
-This is ordinary owner-directed context work, not a Starter.OS conversion process.
-
-## 5. Prove
+## 5. Prove and hand off
 
 Run:
 
@@ -105,22 +59,10 @@ Run:
 ruby os/validate-starter-os.rb
 ```
 
-Review intended changes and privacy, then give the receipt required by `QUICK-SETUP.md`.
+For an explicit Git deferral or opt-out, use `--foundation`. It checks the foundation while reporting missing Git history, and never proves fully protected setup. A clean but unreadable Git repository still needs correction. Verify hosted primaries, accepted mirrors, full-file backups, and restore access separately.
 
-The validator proves local structure and readable local Git history. Separately verify hosted primaries, enabled mirrors, uncovered-file backup, and the restore route before calling setup fully protected.
+Review the intended diff and protect the approved personalization. Give a short receipt: system location and source identity, confirmed preferences, validation, actual protection, unresolved gaps, and optional decisions. Apply the source-cleanup rules in `GIT-SETUP.md`.
 
-Apply the shared distribution-source cleanup contract in `QUICK-SETUP.md`. Remove only an approved temporary public source after confirming it contains no owner work; leave an intentional maintainer checkout intact.
+Explain where information lives, how to start with Chief in ordinary language, and how future updates are reviewed. Setup is complete when the foundation and its protection status are understood and verified to the stated scope. No real task, tutorial exercise, project, or automation is required. The owner chooses what to do next.
 
-Finish with this orientation:
-
-> Your Chief of Staff is your main home. Ask for the outcome you want in ordinary language. Your files hold the lasting information, project work stays with its project, and the manual explains unfamiliar terms. The agent will show a short plan before important work and ask when it needs your approval.
-
-Setup is complete only when:
-
-- the owner adopted the preview;
-- the installed vault passes validation;
-- Git and recovery status are accurate;
-- each enabled mirror is verified or clearly unresolved;
-- each offered recurring workflow has a recorded outcome;
-- no setup files remain inside the private vault;
-- temporary source cleanup is complete or its remaining work is reported.
+If requested later, bring over what matters from an old repository through reviewed copies while the old repository remains unchanged and backed up.
