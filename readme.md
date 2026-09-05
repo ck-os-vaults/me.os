@@ -4,7 +4,7 @@ A free foundation for your own second brain and AI Chief of Staff.
 
 Your files hold lasting knowledge, preferences, decisions, and project context. Your chosen agent helps you work with them. You shape the system through use, keep control of your information, and can change models or tools without rebuilding your knowledge.
 
-The current `main` branch contains the **3.1.0 candidate** for owner testing. To try this newest candidate, tell your agent: “Use the current 3.1 candidate on main and guide me through setup.” This selects the version; the agent still reviews your setup plan with you before creating files. Local checks pass, and independent-review findings have been addressed. Real-user and hosted-service acceptance remain in progress.
+**Starter.OS 3.1.0 is the current release on `main`.** Share the repository link below to get started; no version choice or special prompt is needed.
 
 ## Start with one link
 
@@ -40,7 +40,7 @@ This public repository is a blueprint, never your private working copy. Do not p
 
 ## Releases and maintainers
 
-Normal setup uses an approved released source resolved to its exact commit. This checkout's `setup/release-manifest.json` identifies its version and release status. Unreleased candidates require an explicit choice; tools refuse candidate writes without `--allow-unreleased`. A mutable main branch is not proof of a released version.
+Normal setup uses the current release, **3.1.0**, resolved to its exact commit through the `v3.1.0` release tag. This checkout's `setup/release-manifest.json` records its released status. Historical versions remain in Git history for comparison and recovery. Maintainer builds marked unreleased still require an explicit choice; the current release needs no special flag.
 
 See [CHANGELOG.md](CHANGELOG.md) for changes, compatibility, limitations, and recovery. Run `ruby setup/scripts/validate-starter-kit.rb` for the complete local release suite. Human setup, hosted recovery, schedules, and environment support require separate acceptance evidence.
 

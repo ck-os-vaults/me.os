@@ -163,7 +163,7 @@ class UpdateContractTest < Minitest::Test
   end
 
   def test_original_21_installer_record_full_update_and_restore
-    assert_original_version_update_and_restore("dd03a11", "2.1.0")
+    assert_original_version_update_and_restore("dd03a11567d4aca1c6493656e0c0f4617f18f03b", "2.1.0")
   end
 
   def test_original_unversioned_install_mixed_stock_and_custom_plan_restores_exactly
@@ -203,12 +203,37 @@ class UpdateContractTest < Minitest::Test
   end
 
   def test_candidate_is_not_silently_installed_or_applied
-    refusal("ruby", SOURCE.join("setup/scripts/create-vault.rb"), @vault)
+    source, manifest = copied_source("unreleased-build")
+    manifest["status"] = "unreleased"
+    manifest["released"] = nil
+    source.join("setup/release-manifest.json").write(JSON.pretty_generate(manifest) + "\n")
+    refusal("ruby", source.join("setup/scripts/create-vault.rb"), @vault)
     refute @vault.exist?
     historical
     protect
-    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, plan, "--root-backup", @tmp.join("unapproved"))
+    refusal("ruby", source.join("setup/scripts/update-vault.rb"), "apply", @vault, plan(source: source), "--root-backup", @tmp.join("unapproved"))
     refute @tmp.join("unapproved").exist?
+  end
+
+  def test_current_release_creates_without_candidate_override
+    manifest = JSON.parse(SOURCE.join("setup/release-manifest.json").read)
+    assert_equal "released", manifest.fetch("status")
+    assert_equal "2026-09-05", manifest.fetch("released")
+    success("ruby", SOURCE.join("setup/scripts/create-vault.rb"), @vault)
+    assert_equal "3.1.0", record.fetch("version")
+    validate("--foundation")
+  end
+
+  def test_current_release_updates_without_candidate_override
+    historical
+    protect
+    before = UpdateSupport.inventory(@vault)
+    backup = @tmp.join("released-backup")
+    success("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, plan, "--root-backup", backup)
+    assert_equal "3.1.0", record.fetch("version")
+    validate
+    success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+    assert_equal before, UpdateSupport.inventory(@vault)
   end
 
   def test_new_foundation_can_explicitly_defer_git

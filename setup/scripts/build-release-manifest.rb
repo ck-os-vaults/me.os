@@ -9,7 +9,7 @@ require "set"
 ROOT = Pathname.new(File.expand_path("../..", __dir__))
 OUTPUT = ROOT.join("setup", "release-manifest.json")
 RELEASE_VERSION = "3.1.0"
-RELEASE_DATE = nil
+RELEASE_DATE = "2026-09-05"
 
 OWNER_OWNED = Set.new(%w[
   AGENTS.md
@@ -25,7 +25,7 @@ OWNER_OWNED = Set.new(%w[
 
 HISTORICAL_SOURCES = {
   "2.0.0" => "bb7d3c744348c933b03181a7dffa0b6a8c8701ca",
-  "2.1.0" => "dd03a11",
+  "2.1.0" => "dd03a11567d4aca1c6493656e0c0f4617f18f03b",
   "3.0.0" => "01f60e03b4ad22b4f9135051df57d73f8a7701f4"
 }.freeze
 UPDATE_GROUPS = {

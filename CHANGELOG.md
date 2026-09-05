@@ -8,7 +8,11 @@ Changes being developed belong under **Unreleased**. When a release is approved,
 
 ## [Unreleased]
 
-Starter.OS 3.1.0 is an unreleased candidate distributed on main for owner testing. It has not been tagged or formally released. An approved released source is the normal owner path; candidate writes require an explicit choice.
+No pending changes.
+
+## [3.1.0] - 2026-09-05
+
+The current release and default installation source. Sharing the repository link is enough to begin guided setup; no candidate choice or special flag is required.
 
 ### Added
 
@@ -196,6 +200,7 @@ Before apply, record and verify the exact local Git recovery commit for every af
 
 If validation fails, stop. Restore the affected repository from the named pre-update commit, restore uncovered content from its named backup, run `ruby os/validate-starter-os.rb`, and verify the primary and mirrors before resuming work.
 
-[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/01f60e03b4ad22b4f9135051df57d73f8a7701f4...HEAD
-[2.1.0]: https://github.com/ck-os-vaults/starter-os-public/compare/bb7d3c744348c933b03181a7dffa0b6a8c8701ca...v2.1.0
+[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/ck-os-vaults/starter-os-public/releases/tag/v3.1.0
+[2.1.0]: https://github.com/ck-os-vaults/starter-os-public/compare/bb7d3c744348c933b03181a7dffa0b6a8c8701ca...dd03a11567d4aca1c6493656e0c0f4617f18f03b
 [2.0.0]: https://github.com/ck-os-vaults/starter-os-public/commit/bb7d3c744348c933b03181a7dffa0b6a8c8701ca

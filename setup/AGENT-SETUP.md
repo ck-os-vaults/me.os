@@ -20,7 +20,7 @@ Follow `GIT-SETUP.md`: discover Git and current recovery, explain the recommende
 
 Show one compact plan: exact name and destination, private repository actions, privacy, protection or declined coverage, and what files setup will create. Reuse approval for those same actions. Request another decision only if new evidence changes the scope. The owner handles sign-in privately; never ask for secrets in chat.
 
-Use an approved released source by default. A candidate needs an explicit owner choice and `--allow-unreleased` on creation. Do not infer approval from its presence on main.
+Use the current 3.1.0 release by default, resolved through `v3.1.0` to its exact commit. No version question or special creation flag is needed. Future unreleased builds still need an explicit owner choice and `--allow-unreleased`; their presence on main is not that choice.
 
 ## 3. Create
 

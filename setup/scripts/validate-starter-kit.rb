@@ -579,7 +579,7 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
     starter_2_1_release["version"] = "2.1.0"
     starter_2_1_root_path = File.join(starter_2_1, "AGENTS.md")
     starter_2_1_release.fetch("artifacts").fetch("AGENTS.md")["ownership"] = "managed"
-    starter_2_1_root_seed, starter_2_1_root_seed_status = capture("git", "show", "v2.1.0:os/templates/root-AGENTS.txt")
+    starter_2_1_root_seed, starter_2_1_root_seed_status = capture("git", "show", "dd03a11567d4aca1c6493656e0c0f4617f18f03b:os/templates/root-AGENTS.txt")
     add.call("customized 2.1 root fixture is unavailable from real history") unless starter_2_1_root_seed_status.success?
     starter_2_1_release.fetch("artifacts").fetch("AGENTS.md")["sha256"] = Digest::SHA256.hexdigest(starter_2_1_root_seed)
     File.binwrite(starter_2_1_root_path, "#{starter_2_1_root_seed}\nOwner customization from 2.1.\n")
@@ -766,7 +766,7 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
   end
 
   interrupted_vault = File.join(tmp, "INTERRUPTED-UPDATE.os")
-  interrupted_version = build_historical_vault.call("v2.1.0", interrupted_vault)
+  interrupted_version = build_historical_vault.call("dd03a11567d4aca1c6493656e0c0f4617f18f03b", interrupted_vault)
   if interrupted_version == "2.1.0"
     File.open(File.join(interrupted_vault, "os", "AGENTS.md"), "a") { |file| file.write("\nOwner change selected for replacement in the failure test.\n") }
     File.open(File.join(interrupted_vault, "os", "manual.md"), "a") { |file| file.write("\nOwner manual text selected for a fork in the failure test.\n") }
@@ -839,7 +839,7 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
       end
     end
   else
-    add.call("interrupted-update fixture could not be rebuilt from v2.1.0")
+    add.call("interrupted-update fixture could not be rebuilt from dd03a11567d4aca1c6493656e0c0f4617f18f03b")
   end
 
   unrelated = File.join(tmp, "OTHER-REPOSITORY.os")

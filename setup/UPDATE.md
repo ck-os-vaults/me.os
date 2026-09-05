@@ -12,7 +12,7 @@ Validate the selected source:
 ruby setup/scripts/validate-source.rb
 ```
 
-Resolve the canonical repository's approved release to an immutable commit; match the manifest identity. Use a released source by default. An unreleased candidate requires an explicit choice before adding `--allow-unreleased` to apply.
+Use the current 3.1.0 release by default. Resolve the canonical repository's `v3.1.0` release tag to its immutable commit and match the manifest identity. The current release needs no version choice or special apply flag. A future unreleased build requires an explicit choice before adding `--allow-unreleased` to apply.
 
 Inspect the installed root instructions and `os/release.json`. Recognized unversioned Starter.OS is supported conservatively; generic `os/` and `life/` folders do not prove its identity. An unrelated repository remains untouched. Check actual files, Git topology, and all relevant current work through `GIT-SETUP.md`. A read-only plan may identify issues before recovery exists, but no material target mutation is allowed until its recovery prerequisites are verified.
 
