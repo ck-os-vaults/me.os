@@ -66,12 +66,12 @@ add.call("ordinary-prompt entry is missing") unless readme.include?("find the in
 add.call("owner setup must not require a task") unless agent_setup.include?("No real task")
 add.call("updates must require an agreed plan") unless update.include?("apply only the agreed plan") || update.include?("Apply only the agreed plan")
 add.call("setup lacks a real protection opt-out") unless git_setup.include?("all Git is declined or deferred")
-add.call("manual title missing") unless File.read("os/manual.md").include?("# How Starter.OS works")
+add.call("manual title missing") unless File.read("os/manual.md").include?("# How your system works")
 add.call("MIT code license missing") unless File.read("setup/legal/LICENSE-CODE").include?("MIT License")
 add.call("CC BY content license missing") unless File.read("setup/legal/LICENSE-CONTENT").match?(/Creative\s+Commons\s+Attribution\s+4\.0\s+International/m)
 manifest = JSON.parse(File.read("setup/release-manifest.json"))
 add.call("unsupported release manifest") unless manifest["format"] == 1 && manifest["product"] == "Starter.OS"
-required_starts = %w[unversioned-legacy 2.0.0 2.1.0 3.0.0]
+required_starts = %w[unversioned-legacy 2.0.0 2.1.0 3.0.0 3.1.0]
 add.call("declared prior transitions incomplete") unless (required_starts - manifest.fetch("supported_updates")).empty?
 add.call("invalid release state") unless %w[unreleased released].include?(manifest["status"])
 add.call("candidate has a fabricated release date") if manifest["status"] == "unreleased" && manifest["released"]
@@ -82,7 +82,7 @@ artifacts = manifest.fetch("artifacts")
 paths = artifacts.map { |artifact| artifact.fetch("path") }
 add.call("duplicate installed paths") unless paths.uniq == paths
 artifacts.each do |artifact|
-  add.call("invalid ownership #{artifact['path']}") unless %w[managed owner-owned].include?(artifact["ownership"])
+  add.call("invalid ownership #{artifact['path']}") unless artifact["ownership"] == "owner-owned"
   add.call("undeclared group #{artifact['path']}") unless manifest.fetch("update_groups").key?(artifact["update_group"])
 end
 expected_installed = Dir.glob("{os,life}/**/*", File::FNM_DOTMATCH).select { |path| File.file?(path) } - ["os/release.json"]
@@ -307,7 +307,7 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
     conflicts = plan.fetch("entries").select { |entry| entry["action"] == "conflict" }
     add.call("history-backed #{version} update has unexpected conflicts: #{conflicts.map { |entry| entry['path'] }.join(', ')}") unless conflicts.empty?
     historical_root_entry = plan.fetch("entries").find { |entry| entry["path"] == "AGENTS.md" }
-    add.call("history-backed #{version} update did not plan the root ownership transfer") unless historical_root_entry && historical_root_entry["action"] == (version == "3.0.0" ? "preserve" : "adopt-owner-entry")
+    add.call("history-backed #{version} update did not plan the correct root ownership handling") unless historical_root_entry && historical_root_entry["action"] == (%w[3.0.0 3.1.0].include?(version) ? "preserve" : "adopt-owner-entry")
     historical_root_backup = File.join(tmp, "history-#{version}-root-backup")
     apply_output, apply_status = capture(
       "ruby", "setup/scripts/update-vault.rb", "apply", historical_vault, historical_plan,
@@ -636,7 +636,7 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
     if fork_plan_status.success?
       plan = JSON.parse(File.read(fork_plan))
       manual_entry = plan["entries"].find { |entry| entry["path"] == "os/manual.md" }
-      add.call("modified manual was not detected as a conflict") unless manual_entry && manual_entry["action"] == "conflict"
+      add.call("modified manual was not preserved by default") unless manual_entry && manual_entry["action"] == "modified-preserve"
       fork_apply_output, fork_apply_status = capture(
         "ruby", "setup/scripts/update-vault.rb", "apply", fork_vault, fork_plan,
         "--root-backup", File.join(tmp, "manual-fork-root-backup"),
@@ -752,14 +752,14 @@ Dir.mktmpdir("starter-os-3-") do |tmp|
     add.call("Claude adapter conflict plan failed: #{claude_fork_plan_output.strip}") unless claude_fork_plan_status.success?
     if claude_fork_plan_status.success?
       claude_entry = JSON.parse(File.read(claude_fork_plan))["entries"].find { |entry| entry["path"] == "CLAUDE.md" }
-      add.call("modified root Claude adapter was not detected as a conflict") unless claude_entry && claude_entry["action"] == "conflict"
+      add.call("modified root Claude adapter was not preserved by default") unless claude_entry && claude_entry["action"] == "modified-preserve"
       claude_keep_output, claude_keep_status = capture(
         "ruby", "setup/scripts/update-vault.rb", "apply", claude_fork_vault, claude_fork_plan,
         "--root-backup", File.join(tmp, "claude-keep-root-backup"), "--keep", "CLAUDE.md"
       )
-      if claude_keep_status.success? || !claude_keep_output.include?("use --fork CLAUDE.md=life/claude-entry.md")
-        add.call("updater allowed an in-place root Claude fork that cannot validate")
-      end
+      add.call("updater did not allow a customized root Claude adapter in place: #{claude_keep_output}") unless claude_keep_status.success?
+      claude_validate, claude_validate_status = capture("ruby", "os/validate-starter-os.rb", chdir: claude_fork_vault)
+      add.call("in-place root Claude adapter failed validation: #{claude_validate}") unless claude_validate_status.success?
     end
   else
     add.call("Claude adapter fork fixture could not be created: #{claude_fork_create.strip}")

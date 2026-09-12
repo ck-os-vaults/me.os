@@ -174,6 +174,8 @@ module UpdateSupport
       "installed_version" => plan.fetch("installed_version"), "target_version" => plan.fetch("target_version"),
       "source_manifest_sha256" => plan.fetch("source_manifest_sha256"),
       "plan_sha256" => Digest::SHA256.hexdigest(JSON.generate(plan)),
+      "review_notes_sha256" => plan["review_notes"] && plan["review_notes"]["sha256"],
+      "adapted_candidates" => plan.fetch("adaptations", {}).transform_values { |record| record.fetch("sha256") },
       "repositories" => heads, "inventory" => before, "writes" => rows,
       "new_paths" => rows.reject { |row| row["before"] }.map { |row| row["path"] },
       "created_directories" => created_dirs, "files" => root_files

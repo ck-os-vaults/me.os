@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-08-29
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -45,7 +45,7 @@ A file appearing in this map does not authorize execution, installation, connect
 When a broadly reusable workflow is added or materially changed:
 
 1. Keep the canonical intent in `os/skills/`.
-2. For owner additions, register it in `owner-skills.md` with one role and a real trigger. This product registry stays managed; only an approved product update changes it.
+2. For owner additions, register it in `owner-skills.md` with one role and a real trigger. Both registries belong to the owner; maintain existing entries when their workflow changes. A product update is not required.
 3. Keep project-specific or owner-specific methods with their owner.
 4. Add an agent-specific pointer only when discovery or tooling needs it.
 5. Declare external tools, data exposure, permissions, cost, and a free or already-owned alternative.

@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
 require "digest"
+require "find"
 require "json"
 require "open3"
 require "pathname"
+require "uri"
 
 ROOT = Pathname.new(File.expand_path("..", __dir__))
 IGNORED_COMPUTER_FILES = %w[.DS_Store .localized Thumbs.db desktop.ini].freeze
@@ -146,20 +148,20 @@ if File.file?("AGENTS.md")
   root_checks = {
     "does not route to os/AGENTS.md" => root_agents.include?("os/AGENTS.md"),
     "does not route to os/me.md" => root_agents.include?("os/me.md"),
-    "does not route project and business work to the nearest AGENTS.md" => root_agents.match?(/nearest.*AGENTS\.md/im) && root_agents.match?(/life.*biz/im),
-    "does not retain the upstream release route" => root_agents.include?("os/release.json")
+    "does not route project and business work to the nearest AGENTS.md" => root_agents.match?(/nearest.*AGENTS\.md/im) && root_agents.match?(/life.*biz/im)
   }
   root_checks.each do |message, passes|
     next if passes
-    if customized_owner_root
+    if customized_owner_root && !message.include?("os/AGENTS.md")
       notice.call("preserved owner root AGENTS.md #{message}; reconcile only with the owner's approval")
     else
       add.call("root AGENTS.md #{message}")
     end
   end
 end
-if File.file?("CLAUDE.md") && File.file?("os/templates/root-CLAUDE.txt")
-  add.call("root CLAUDE.md differs from its recovery template") unless File.read("CLAUDE.md") == File.read("os/templates/root-CLAUDE.txt")
+%w[CLAUDE.md os/CLAUDE.md life/CLAUDE.md].each do |adapter|
+  next unless File.file?(adapter) && !symlink_component?(adapter)
+  add.call("agent adapter does not route to shared instructions: #{adapter}") unless File.read(adapter).include?("AGENTS.md")
 end
 
 allowed_roots = %w[.obsidian .codex .claude .agents AGENTS.md CLAUDE.md biz life os]
@@ -199,19 +201,76 @@ registered_skills = registrations.uniq.sort
 (registered_skills - actual_skills).each { |skill| add.call("registered skill missing: os/skills/#{skill}.md") }
 (actual_skills - registered_skills).each { |skill| add.call("unregistered skill file: os/skills/#{skill}.md") }
 
-manual = File.file?("os/manual.md") ? File.read("os/manual.md") : ""
-operating_rules = File.file?("os/AGENTS.md") ? File.read("os/AGENTS.md") : ""
-add.call("manual is missing its human title") unless manual.include?("# How Starter.OS works")
-add.call("manual does not explain Git, skills, automations, and updates") unless %w[Git Skills automations Update].all? { |word| manual.match?(/#{word}/i) }
-add.call("manual is not declared protected") unless manual.match?(/may not rewrite|protected/i)
-add.call("operating rules do not route explanations to the manual") unless operating_rules.match?(/Use .*manual\.md.*owner asks/im)
-add.call("operating rules do not protect the manual") unless operating_rules.match?(/manual\.md.*protected/im) && operating_rules.match?(/Do not rewrite/im)
+# Owner prose is not a release checksum contract. Inspect actual local links and
+# declared repository paths, without interpreting prose as commands.
+markdown_files = []
+Find.find(ROOT.to_s) do |absolute|
+  path = Pathname.new(absolute)
+  if path.symlink?
+    next
+  elsif path.directory?
+    Find.prune if %w[.git .codex .claude .agents .obsidian].include?(path.basename.to_s)
+  elsif path.extname == ".md"
+    markdown_files << path
+  end
+end
+markdown_files.each do |path|
+  relative = path.relative_path_from(ROOT).to_s
+  next if relative.split("/").include?("templates")
+  body = path.read.gsub(/```.*?```/m, "").gsub(/`[^`]*`/, "")
+  body.scan(/\[[^\]]*\]\(([^)]+)\)/).flatten.each do |link|
+    link = link.sub(/\s+"[^"]*"\z/, "").sub(/\A</, "").sub(/>\z/, "").split("#", 2).first.to_s
+    next if link.empty? || link.match?(/\A[a-z][a-z0-9+.-]*:/i) || link.include?("<")
+    link = URI::DEFAULT_PARSER.unescape(link)
+    destination = path.parent.join(link).cleanpath
+    if !destination.to_s.start_with?("#{ROOT}/")
+      notice.call("external link requires separate verification: #{relative}")
+    elsif symlink_component?(destination.relative_path_from(ROOT).to_s)
+      add.call("local link crosses a symbolic link: #{relative} -> #{link}")
+    elsif !destination.exist?
+      add.call("broken local link: #{relative} -> #{link}")
+    end
+  end
+  body.scan(/\[\[([^\]]+)\]\]/).flatten.each do |link|
+    link = link.split("|", 2).first.split("#", 2).first.to_s
+    next if link.empty? || link.include?("<")
+    candidates = [path.parent.join(link), ROOT.join(link)].flat_map { |base| [base, Pathname.new("#{base}.md")] }.map(&:cleanpath)
+    candidates += markdown_files.select { |file| file.basename(".md").to_s == link } unless link.include?("/")
+    add.call("broken wiki link: #{relative} -> #{link}") unless candidates.any? { |file| file.file? && file.to_s.start_with?("#{ROOT}/") && !symlink_component?(file.relative_path_from(ROOT).to_s) }
+  end
+end
+if File.file?("os/recovery.md") && !symlink_component?("os/recovery.md")
+  columns = nil
+  File.foreach("os/recovery.md") do |line|
+    unless line.start_with?("|")
+      columns = nil
+      next
+    end
+    cells = line.strip.split("|")[1..-1].map { |cell| cell.strip.delete("`") }
+    if cells.include?("Local path") && cells.include?("Repository")
+      columns = cells
+      next
+    end
+    next unless columns && cells.length == columns.length
+    raw = cells[columns.index("Local path")]
+    next if raw.empty? || raw.match?(/\A:?-+:?\z/) || raw.include?("<")
+    repository = Pathname.new(raw)
+    repository = ROOT.join(repository).cleanpath unless repository.absolute?
+    if !repository.directory?
+      add.call("declared recovery repository missing: #{raw}")
+    elsif repository.to_s.start_with?("#{ROOT}/") && symlink_component?(repository.relative_path_from(ROOT).to_s)
+      add.call("declared recovery repository crosses a symbolic link: #{raw}")
+    else
+      history_check.call(repository.to_s, "declared recovery repository #{raw}")
+    end
+  end
+end
 
 release_path = Pathname.new("os/release.json")
 if release_path.file?
   begin
     release = JSON.parse(release_path.read)
-    add.call("unsupported release record") unless release["format"] == 1 && release["product"] == "Starter.OS" && !release["version"].to_s.empty?
+    add.call("unsupported release record") unless [1, 2].include?(release["format"]) && release["product"] == "Starter.OS" && !release["version"].to_s.empty?
     release_artifacts = release.fetch("artifacts", {})
     add.call("release record has no artifacts") if release_artifacts.empty?
     release_artifacts.each do |path, record|
@@ -227,24 +286,18 @@ if release_path.file?
       end
       absolute = Pathname.new(path)
       add.call("invalid ownership: #{path}") unless %w[managed owner-owned forked].include?(record["ownership"])
-      if record["ownership"] == "managed"
-        if !absolute.file?
-          add.call("managed release artifact is missing: #{path}")
-        elsif record["sha256"].to_s.empty?
-          add.call("managed release artifact has no checksum: #{path}")
-        elsif Digest::SHA256.file(absolute).hexdigest != record["sha256"]
-          add.call("managed release artifact changed outside the update process: #{path}")
-        end
+      add.call("recorded artifact is missing: #{path}") unless absolute.file?
+      if absolute.file? && record["sha256"] && Digest::SHA256.file(absolute).hexdigest != record["sha256"]
+        notice.call("owner customization: #{path}; source baseline retained for optional comparison")
       end
       add.call("root AGENTS.md must be owner-owned") if path == "AGENTS.md" && record["ownership"] != "owner-owned"
-      add.call("protected product manual cannot be forked in place") if path == "os/manual.md" && record["ownership"] == "forked"
     end
     adoption = release["adoption"]
-    if adoption && adoption["kind"] == "partial"
-      notice.call("selected improvements from #{adoption['offered_version']}; base release remains #{release['version']}")
+    if adoption && %w[partial adapted].include?(adoption["kind"])
+      notice.call("#{adoption['kind'] == 'partial' ? 'selected' : 'adapted'} improvements from #{adoption['offered_version']}; base release remains #{release['version']}")
     end
     release_artifacts.each do |path, record|
-      next unless record["ownership"] == "forked"
+      next unless record["ownership"] == "forked" || record["customized"]
       available = record["available_upstream"]
       notice.call("owner fork retained: #{path}; upstream #{available && available['version'] || 'changes'} may be reviewed separately")
     end
@@ -274,8 +327,7 @@ if release_path.file?
   end
 end
 
-# Managed-file hashes enforce the shipped content. Validate user-visible contracts
-# through release acceptance tests instead of requiring exact prose at runtime.
+# Source integrity is checked in the public distribution, not imposed on owner prose.
 secret_shapes = {
   "private key" => /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
   "GitHub token" => /(?:ghp|gho|github_pat)_[A-Za-z0-9_]{20,}/,
@@ -290,7 +342,7 @@ Dir.glob("{os,life,biz}/**/*", File::FNM_DOTMATCH).select { |path| File.file?(pa
 end
 
 if errors.empty?
-  puts "PASS Starter.OS installed vault: structure, release identity, protected manual, skill registry, #{foundation_mode ? 'foundation protection notices' : 'readable local Git history'}, recurring workflow recipes, and privacy checks"
+  puts "PASS installed system: structure, provenance record, local links, skill registry, #{foundation_mode ? 'foundation protection notices' : 'readable local Git history'}, and privacy checks"
   notices.each { |message| puts "NOTICE #{message}" }
   puts "NOTE Foundation-only check requested; this is not proof of fully protected setup" if foundation_mode
   puts "NOTE Hosted primaries, mirrors, uncovered-file backups, and restore routes require separate verification in os/recovery.md"

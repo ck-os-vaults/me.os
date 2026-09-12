@@ -20,7 +20,7 @@ Follow `GIT-SETUP.md`: discover Git and current recovery, explain the recommende
 
 Show one compact plan: exact name and destination, private repository actions, privacy, protection or declined coverage, and what files setup will create. Reuse approval for those same actions. Request another decision only if new evidence changes the scope. The owner handles sign-in privately; never ask for secrets in chat.
 
-Use the current 3.1.0 release by default, resolved through `v3.1.0` to its exact commit. No version question or special creation flag is needed. Future unreleased builds still need an explicit owner choice and `--allow-unreleased`; their presence on main is not that choice.
+Use the current 3.2.0 release by default, resolved through `v3.2.0` to its exact commit. No version question or special creation flag is needed. Future unreleased builds still need an explicit owner choice and `--allow-unreleased`; their presence on main is not that choice.
 
 ## 3. Create
 
@@ -47,7 +47,7 @@ Add only confirmed context:
 - Actual capabilities and optional routines: `os/integrations.md`.
 - Verified, declined, deferred, or missing protection: `os/recovery.md`.
 
-Never edit managed files just to personalize them, including `os/manual.md` and the product skill map. Owner-specific methods have their own homes. Projects and businesses are created later on request through the installed helpers; each real business needs its own protection.
+All installed instructions, manuals, skills, and registries belong to the owner. Maintain them within the approved scope without fork registration. Preserve meaning and attribution; do not invent preferences or rewrite instructions merely to make them different. Projects and businesses are created later on request through the installed helpers; each real business needs its own protection.
 
 Offer only a few relevant optional improvements. The owner may adopt, decline, or defer. Use existing choices and actual repository, runtime persistence, scheduler, source-access, and delivery capabilities; do not inventory unavailable services just to fill a form. Accepted recurring work follows its portable recipe, returns to an existing home when supported, and is separately verified. Never create an automation just because a recipe exists.
 

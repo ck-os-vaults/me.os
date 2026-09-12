@@ -1,8 +1,8 @@
 ---
 type: skill
 created: 2026-06-20
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -21,7 +21,7 @@ Run after imports/restructures, periodically, or when retrieval surfaces the wro
 ## steps
 
 1. Choose one repo or area.
-2. Read release ownership first. List metadata gaps in owner files; report issues in managed product artifacts without editing their dates or content.
+2. Identify the owning files and task authority. All installed content belongs to the owner; source provenance is not an edit restriction. List metadata gaps and repair only within the approved audit scope.
 3. Cross-check currency against current status, specs, decisions, and owner words.
 4. Set `reviewed` to the audit date; change `updated` only when content/current truth changed.
 5. Mark replaced current files `superseded` with `superseded_by`; leave dated history as history; use `draft` when uncertain.

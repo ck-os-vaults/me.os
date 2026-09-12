@@ -4,5 +4,3 @@ This is {{SYSTEM_NAME}}, the owner's private system. It belongs to the owner and
 
 Read `os/AGENTS.md` first, then `os/me.md`.
 When working inside `life/` or `biz/<business>/`, follow the nearest `AGENTS.md`.
-
-Starter.OS is only the upstream framework recorded in `os/release.json`. Use it when the owner asks for an update.

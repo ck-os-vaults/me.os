@@ -10,6 +10,53 @@ Changes being developed belong under **Unreleased**. When a release is approved,
 
 No pending changes.
 
+## [3.2.0] - 2026-09-12
+
+The current release and default one-link setup source. Existing 3.1.0 history and
+its release tag remain unchanged.
+
+### Changed
+
+- Every installed instruction, manual, skill, template, and registry belongs to
+  the owner. Ordinary authorized maintenance needs no product update or fork registration.
+- Root startup stays focused on the owner's system. Origin and optional update
+  information live in a task-specific reference, separate from routine startup.
+- Modified source-derived content is preserved by default. Custom manuals and
+  agent entries remain valid in place; existing copied-manual routes stay intact.
+- Installed health checks local routes, registries, declared recovery repository
+  paths, and readable Git history. Owner edits are not release-integrity failures.
+  Downloaded-source integrity remains a separate strict check.
+
+### Added
+
+- Exact reviewed adaptations within the existing protected update transaction,
+  with candidate hashes, preservation notes, full inventory checks, and restoration.
+- Separate governance, validation, and project-tool groups. A selected improvement
+  brings narrow record-compatible validation and owner-maintenance guidance, not
+  the entire foundation. Customized legacy shared rules need exact reviewed reconciliation.
+- Format-2 installed/adoption records separate owner governance from provenance.
+  Older updaters refuse these records before writing, even after selected adoption.
+- Historical 3.1 update coverage alongside the existing supported starting states.
+
+### Compatibility, update, and recovery
+
+Follow `setup/UPDATE.md` with the owner’s current system and agree on a useful plan.
+Full transitions support declared 2.0, 2.1, 3.0, 3.1, and recognized unversioned
+installations. Selected adoption supports 3.0, 3.1, and 3.2. Partial or adapted
+adoption retains the original base and installation identity. Legacy fork evidence
+remains available without imposing the old maintenance workflow.
+
+The transaction supports regular files in independent protected `os/` and `life/`
+repositories and root agent files. Other topology needs separate review; no system
+is rebuilt merely to satisfy the updater. Source, candidate, notes, and target
+changes require a new reviewed plan. Keep the external backup until acceptance;
+use restore preview before approved restoration. Later work is never discarded to
+force a restore. No live schedules are created or changed by an update.
+
+Local automated proof is not a human usability pilot or verification of hosted
+restore, enabled schedules, every privacy risk, every model, or every environment.
+Semantic preservation and actual protection still require agent and owner review.
+
 ## [3.1.0] - 2026-09-05
 
 The current release and default installation source. Sharing the repository link is enough to begin guided setup; no candidate choice or special flag is required.
@@ -200,7 +247,8 @@ Before apply, record and verify the exact local Git recovery commit for every af
 
 If validation fails, stop. Restore the affected repository from the named pre-update commit, restore uncovered content from its named backup, run `ruby os/validate-starter-os.rb`, and verify the primary and mirrors before resuming work.
 
-[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/ck-os-vaults/starter-os-public/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/ck-os-vaults/starter-os-public/releases/tag/v3.2.0
 [3.1.0]: https://github.com/ck-os-vaults/starter-os-public/releases/tag/v3.1.0
 [2.1.0]: https://github.com/ck-os-vaults/starter-os-public/compare/bb7d3c744348c933b03181a7dffa0b6a8c8701ca...dd03a11567d4aca1c6493656e0c0f4617f18f03b
 [2.0.0]: https://github.com/ck-os-vaults/starter-os-public/commit/bb7d3c744348c933b03181a7dffa0b6a8c8701ca

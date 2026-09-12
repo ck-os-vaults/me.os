@@ -63,12 +63,15 @@ if errors.empty?
     add.call("release manifest does not identify Starter.OS") unless manifest["format"] == 1 && manifest["product"] == "Starter.OS"
     add.call("release manifest has no version") if manifest["version"].to_s.strip.empty?
     add.call("release manifest has an invalid status") unless %w[unreleased released].include?(manifest["status"])
+    add.call("unsupported installed record format") unless manifest["installed_record_format"] == 2
 
     artifacts = manifest.fetch("artifacts")
     artifact_paths = {}
     artifacts.each do |artifact|
       path = safe_relative(artifact.fetch("path"))
       source = safe_relative(artifact.fetch("source"))
+      add.call("release attempts to take ownership: #{path}") unless artifact["ownership"] == "owner-owned" && artifact["permitted_editor"] == "owner and approved agents"
+      add.call("invalid update strategy: #{path}") unless %w[seed-once-then-preserve offer-if-unmodified].include?(artifact["update"])
       add.call("duplicate installed path in release manifest: #{path}") if artifact_paths[path]
       artifact_paths[path] = true
       source_path = ROOT.join(source)

@@ -12,7 +12,7 @@ Validate the selected source:
 ruby setup/scripts/validate-source.rb
 ```
 
-Use the current 3.1.0 release by default. Resolve the canonical repository's `v3.1.0` release tag to its immutable commit and match the manifest identity. The current release needs no version choice or special apply flag. A future unreleased build requires an explicit choice before adding `--allow-unreleased` to apply.
+Use the current 3.2.0 release by default. Resolve the canonical repository's `v3.2.0` release tag to its immutable commit and match the manifest identity. The current release needs no version choice or special apply flag. A future unreleased build requires an explicit choice before adding `--allow-unreleased` to apply.
 
 Inspect the installed root instructions and `os/release.json`. Recognized unversioned Starter.OS is supported conservatively; generic `os/` and `life/` folders do not prove its identity. An unrelated repository remains untouched. Check actual files, Git topology, and all relevant current work through `GIT-SETUP.md`. A read-only plan may identify issues before recovery exists, but no material target mutation is allowed until its recovery prerequisites are verified.
 
@@ -28,9 +28,9 @@ Create a deterministic proposal outside source and target:
 ruby setup/scripts/update-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/update-plan.json
 ```
 
-This is a full proposal, not an instruction to apply everything. Explain only meaningful improvements, behavior changes, dependencies, and genuine conflicts. The plan includes selected groups and a protected local inventory. Unknown and owner-owned files remain untouched.
+This is a full proposal, not an instruction to apply everything. Explain only meaningful improvements, behavior changes, dependencies, and genuine conflicts. The plan includes selected groups and a protected local inventory. Unknown files, seed-only content, and local customizations remain untouched unless an exact change is approved.
 
-Selected adoption is validated for 3.0 and 3.1 bases. Earlier versioned and unversioned bases use a full reviewed transition, or a separately reviewed agent adaptation; the tool refuses unvalidated partial combinations.
+Selected adoption is validated for 3.0, 3.1, and 3.2 bases. Earlier versioned and unversioned bases use a full reviewed transition, or a separately reviewed agent adaptation; the tool refuses unvalidated partial combinations.
 
 For selected improvements, create a new proposal using the groups declared in `setup/release-manifest.json`:
 
@@ -38,7 +38,9 @@ For selected improvements, create a new proposal using the groups declared in `s
 ruby setup/scripts/update-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/selected-plan.json --only news-report
 ```
 
-Repeat `--only GROUP` for more groups. The tool includes declared dependencies and reports the actual selection. Current groups are `foundation`, `morning-brief`, `news-report`, `work-wrap`, `reconciliation`, and `security-watch`. Installing a recipe never enables a routine. The foundation is one coordinated group so its instructions, extension registry, and validator stay consistent. Partial adoption retains the previous base version and records the adopted group/source identity; it is not full release adoption.
+Repeat `--only GROUP` for more groups. The tool includes declared dependencies and reports the actual selection. Current groups are `governance`, `validation`, `foundation`, `project-tools`, `morning-brief`, `news-report`, `work-wrap`, `reconciliation`, and `security-watch`. Selected improvements include the small validation and shared-governance dependencies, not the entire foundation. Validation includes an absent owner-registry seed. A customized old validator needs an exact compatible adaptation or reviewed replacement. Installing a recipe never enables a routine. Partial adoption retains the previous base version and records the adopted group/source identity; it is not full release adoption.
+
+On the first owner-controlled transition, reconcile legacy product-imposed maintenance restrictions in `os/AGENTS.md`. Unchanged shared rules can adopt the reviewed source. Customized shared rules need an exact reviewed adaptation that retains unrelated owner instructions and explicitly supersedes only obsolete product restrictions; `--keep` alone cannot establish this transition. An already-compatible owner version may use a byte-identical candidate with preservation notes. Do not remove the owner's independently chosen protections. Root entry bytes and the rest of the foundation stay unchanged unless separately included in the approved plan. This is a narrow compatibility dependency, not permission to replace a personalized foundation.
 
 For extensive customization that cannot use this updater, stop the standard tool and propose a separate bounded adaptation of selected improvements within the owner's layout. Preserve and verify all affected content. Do not claim full version compatibility or silently change their structure. This is owner maintenance within Update, not a third installation route.
 
@@ -46,14 +48,24 @@ For extensive customization that cannot use this updater, stop the standard tool
 
 Agree on one compact implementation plan: relevant benefits, exact affected locations, preserved behavior, dependency groups, real conflicts, recovery, Git actions, and any cleanup. Reuse existing authority for that same reviewed scope. The owner can adopt, adapt, decline, or defer. Do not interview them about every file or repeat previously declined routine suggestions.
 
-For a modified managed file, offer the smallest meaningful options:
+All installed content belongs to the owner. Baselines are provenance, not edit restrictions. For a modified source-derived file, preserve it by default and offer only useful choices:
 
-- Reconcile personal meaning into an owner-controlled home, then use the reviewed upstream version.
-- Keep the owner's version as an explicit fork.
+- Adapt the relevant improvement to the existing owner-controlled file.
+- Keep the owner's version in place, without a fork ceremony.
 - Replace with the reviewed upstream file.
 - Defer the affected group or the update.
 
-Large customized instructions must be read for meaning, preserved fully, and never replaced by a summary. The owner root `AGENTS.md` is preserved byte for byte. Only a recognized untouched historical product root may receive its one-time ownership transfer. Existing forks can keep their baseline or explicitly rejoin upstream; relevant new upstream changes must be explained.
+Large customized instructions must be read for meaning, preserved fully, and never replaced by a summary. For each instruction removed or consolidated, temporary review notes must identify its surviving authoritative home or explicit removal approval. Read the claimed home before calling content redundant. The owner root `AGENTS.md` is preserved byte for byte unless an exact adaptation is approved. Only a recognized untouched historical product root may receive its one-time ownership transfer. Existing forks retain their baseline and routes; relevant new upstream changes must be explained.
+
+### Exact reviewed adaptations
+
+Prepare candidate files and preservation notes outside both source and target. The notes explain the behavior preserved, the authoritative homes for any consolidated instructions, explicit removals, validation, and owner approval. Then bind those exact inputs into a new plan:
+
+```sh
+ruby setup/scripts/update-vault.rb plan /absolute/path/to/NAME.os /absolute/path/to/adapted-plan.json --only foundation --adapt os/manual.md=/absolute/path/to/reviewed-manual.md --review /absolute/path/to/preservation-notes.md
+```
+
+Repeat `--adapt PATH=EXTERNAL_FILE` for each reviewed candidate. Standard adaptations cover regular files inside protected `os/` and `life/`, plus root `AGENTS.md` and `CLAUDE.md`. Select the declared group of any adapted release artifact. Other owner files in that scope are explicitly listed, not silently added. Generated metadata, hidden configuration, symlinks, case aliases, nested repositories, and other destinations are refused. Do not use this path to rewrite Git configuration or move repository boundaries. Review the final plan and inputs; edits require a new plan. This is exact adoption, not automatic semantic merging.
 
 ## 4. Improve
 
@@ -63,9 +75,9 @@ Apply only the agreed plan:
 ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/new-update-backup
 ```
 
-For each approved conflict or existing fork, use `--keep PATH`, `--replace PATH`, or `--fork SOURCE=DESTINATION`. A checksum match makes a managed file eligible, not authorized outside the plan. Source, target, plan, and inventory are rechecked before writes.
+For each genuine conflict, or an explicit choice about preserved customization, use `--keep PATH`, `--replace PATH`, or legacy `--fork SOURCE=DESTINATION`. Modified files otherwise stay in place. A checksum match makes a source-derived file eligible, not authorized outside the plan. Source, target, plan, candidate files, preservation notes, and inventory are rechecked before writes.
 
-`os/manual.md` and root `CLAUDE.md` cannot be kept as in-place forks. Preserve their customized text at an approved external owner location, for example:
+Custom `os/manual.md` and root `CLAUDE.md` remain valid in place. Keep an already-routed personal manual at its actual home. There is no mandatory manual copy or adapter relocation. The older copy operation remains available only when the owner explicitly wants it, for example:
 
 ```sh
 ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/path/to/update-plan.json --root-backup /absolute/path/to/new-update-backup --fork os/manual.md=life/manual.md
@@ -73,7 +85,7 @@ ruby setup/scripts/update-vault.rb apply /absolute/path/to/NAME.os /absolute/pat
 
 A manual fork also adds its route to `os/me.md` within this transaction; include that owner-file addition in the approval. For the root adapter use `--fork CLAUDE.md=life/claude-entry.md`. Fork copies must stay inside `os/` or `life/`, the repositories covered by this transaction. No arbitrary owner file, Git metadata, generated release metadata, existing destination, or unselected artifact may be overwritten as a fork destination.
 
-Keep the entire external transaction backup. No-change updates leave the installation and its dates untouched. Do not push until validation and preservation checks pass and publication is authorized.
+Keep the entire external transaction backup, including adaptation preservation notes. Direct and adapted writes share the same before/after staging, protected inventory, and restore path. Selected or adapted adoption retains the original base and installation identity. Format-2 adoption records make older updaters refuse without writing, including after a partial update; do not edit the record to bypass that safeguard. No-change updates leave the installation and its dates untouched. Do not push until validation and preservation checks pass and publication is authorized.
 
 ## 5. Prove, or restore
 
@@ -83,7 +95,7 @@ Run installed validation, compare the actual diff with the approved plan, and ve
 ruby os/validate-starter-os.rb
 ```
 
-The updater proves that only its declared writes changed the local inventory. The validator checks local contracts and reports owner notices. Neither proves hosted primaries, mirrors, external backups, schedules, or semantic meaning; verify those separately.
+The updater checks that only its declared writes changed the local inventory. Installed validation checks operational health, local links, registries, and declared recovery repository paths. It does not require owner files to match release bytes. Public-source integrity is checked separately. Neither check proves hosted primaries, mirrors, external backups, schedules, or semantic meaning; verify those separately.
 
 On interruption or failed checks, stop and inspect the complete recovery transaction:
 

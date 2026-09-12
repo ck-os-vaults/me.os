@@ -1,8 +1,8 @@
 ---
 type: skill
 created: 2026-08-30
-updated: 2026-08-30
-reviewed: 2026-08-30
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -34,8 +34,8 @@ Use when two durable sources disagree, a map points to missing or moved material
    - update a pointer;
    - designate one canonical owner and link the rest;
    - merge reviewed differences;
-   - restore a managed file through the update process;
-   - record an explicit fork;
+   - restore reviewed source content through the update process;
+   - preserve or adapt an owner customization in place;
    - retire a duplicate after approval;
    - leave unresolved with a named next check.
 6. Wait for approval before structural edits, replacement, deletion, Git history changes, remote changes, or automation changes.

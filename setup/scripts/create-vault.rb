@@ -121,7 +121,8 @@ artifacts.each do |artifact|
 end
 
 release_record = {
-  "format" => 1,
+  "format" => manifest.fetch("installed_record_format"),
+  "ownership_model" => "owner-controlled",
   "product" => "Starter.OS",
   "version" => manifest.fetch("version"),
   "installed_at" => Time.now.utc.iso8601,
@@ -134,6 +135,7 @@ release_record = {
       path,
       {
         "ownership" => artifact.fetch("ownership"),
+        "update" => artifact.fetch("update"),
         "sha256" => sha256(target),
         "upstream_sha256" => artifact.fetch("sha256"),
         "source_version" => manifest.fetch("version")

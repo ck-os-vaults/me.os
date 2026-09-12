@@ -6,6 +6,8 @@ require_relative "update-support"
 class UpdateContractTest < Minitest::Test
   SOURCE = Pathname.new(File.expand_path("../..", __dir__)).realpath
   HISTORY = "01f60e03b4ad22b4f9135051df57d73f8a7701f4"
+  HISTORY_31 = "efc04180e09726dd4c6f7d47c8b98d972ef0f74d"
+  VERSION = "3.2.0"
 
   def command(*args, cwd: SOURCE, env: {})
     output, status = Open3.capture2e(env, *args.map(&:to_s), chdir: cwd.to_s)
@@ -27,7 +29,7 @@ class UpdateContractTest < Minitest::Test
   end
 
   def setup
-    @tmp = Pathname.new(Dir.mktmpdir("starter-contract-"))
+    @tmp = Pathname.new(Dir.mktmpdir("starter-contract-")).realpath
     @vault = @tmp.join("OWNER.os")
     @sequence = 0
   end
@@ -66,7 +68,7 @@ class UpdateContractTest < Minitest::Test
     manifest_text, ok = command("git", "show", "#{ref}:setup/release-manifest.json")
     manifest_text = success("git", "show", "#{ref}:release-manifest.json") unless ok
     manifest = JSON.parse(manifest_text)
-    assert_includes %w[2.0.0 2.1.0 3.0.0], manifest.fetch("version")
+    assert_includes %w[2.0.0 2.1.0 3.0.0 3.1.0], manifest.fetch("version")
     @vault.mkpath
     manifest.fetch("directories").each { |name| @vault.join(name).mkpath }
     records = {}
@@ -149,7 +151,7 @@ class UpdateContractTest < Minitest::Test
     before = UpdateSupport.inventory(@vault)
     backup = apply(plan, "--keep", custom)
     assert_equal owner_bytes, @vault.join(custom).binread
-    assert_equal "3.1.0", record.fetch("version")
+    assert_equal VERSION, record.fetch("version")
     assert_equal version, record.fetch("installed_source").fetch("version")
     assert_equal original_record.fetch("installed_at"), record.fetch("installed_at")
     validate
@@ -195,7 +197,8 @@ class UpdateContractTest < Minitest::Test
     end
     backup = apply(proposal, *choices)
     assert_equal owner_bytes, @vault.join(custom).binread
-    assert_equal "forked", record.fetch("artifacts").fetch(custom).fetch("ownership")
+    assert_equal "owner-owned", record.fetch("artifacts").fetch(custom).fetch("ownership")
+    assert record.fetch("artifacts").fetch(custom).fetch("customized")
     assert_equal SOURCE.join(stock_path).binread, @vault.join(stock_path).binread
     validate
     success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
@@ -218,9 +221,9 @@ class UpdateContractTest < Minitest::Test
   def test_current_release_creates_without_candidate_override
     manifest = JSON.parse(SOURCE.join("setup/release-manifest.json").read)
     assert_equal "released", manifest.fetch("status")
-    assert_equal "2026-09-05", manifest.fetch("released")
+    assert_equal "2026-09-12", manifest.fetch("released")
     success("ruby", SOURCE.join("setup/scripts/create-vault.rb"), @vault)
-    assert_equal "3.1.0", record.fetch("version")
+    assert_equal VERSION, record.fetch("version")
     validate("--foundation")
   end
 
@@ -230,7 +233,7 @@ class UpdateContractTest < Minitest::Test
     before = UpdateSupport.inventory(@vault)
     backup = @tmp.join("released-backup")
     success("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, plan, "--root-backup", backup)
-    assert_equal "3.1.0", record.fetch("version")
+    assert_equal VERSION, record.fetch("version")
     validate
     success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
     assert_equal before, UpdateSupport.inventory(@vault)
@@ -298,7 +301,7 @@ class UpdateContractTest < Minitest::Test
     original_date = record.fetch("installed_at")
     original_manifest = record.fetch("manifest_sha256")
     backup = apply(plan)
-    assert_equal "3.1.0", record.fetch("version")
+    assert_equal VERSION, record.fetch("version")
     assert_equal original_date, record.fetch("installed_at")
     assert_equal({ "version" => "3.0.0", "manifest_sha256" => original_manifest }, record.fetch("installed_source"))
     %w[AGENTS.md os/me.md os/owner-skills.md os/skills/personal-method.md life/archive/owner-note.md life/.DS_Store .codex/config.toml].each do |path|
@@ -342,13 +345,13 @@ class UpdateContractTest < Minitest::Test
     before = UpdateSupport.inventory(@vault)
     proposal = plan("--only", "news-report")
     parsed = JSON.parse(proposal.read)
-    assert_equal ["news-report"], parsed.fetch("selected_groups")
+    assert_equal %w[governance news-report validation], parsed.fetch("selected_groups")
     assert_equal "partial", parsed.fetch("adoption")
     backup = apply(proposal)
     assert_equal "3.0.0", record.fetch("version")
-    assert_equal "3.1.0", record.fetch("adoption").fetch("offered_version")
+    assert_equal VERSION, record.fetch("adoption").fetch("offered_version")
     changed = JSON.parse(backup.join("receipt.json").read).fetch("writes").map { |row| row.fetch("path") }
-    assert_empty changed - %w[os/skills/news-report.md os/release.json]
+    assert_empty changed - %w[os/AGENTS.md os/skills/news-report.md os/validate-starter-os.rb os/owner-skills.md os/release.json]
     before.each do |path, state|
       assert_equal state, UpdateSupport.state(@vault.join(path)) unless changed.include?(path)
     end
@@ -373,7 +376,8 @@ class UpdateContractTest < Minitest::Test
     proposal = plan
     assert_equal "forked", JSON.parse(proposal.read).fetch("entries").find { |row| row["path"] == path }.fetch("action")
     apply(proposal, "--replace", path)
-    assert_equal "managed", record.fetch("artifacts").fetch(path).fetch("ownership")
+    assert_equal "owner-owned", record.fetch("artifacts").fetch(path).fetch("ownership")
+    refute record.fetch("artifacts").fetch(path).fetch("customized")
     assert_equal SOURCE.join(path).binread, @vault.join(path).binread
     validate
   end
@@ -388,8 +392,8 @@ class UpdateContractTest < Minitest::Test
     original_base = record.fetch("artifacts").fetch(path).fetch("fork_base")
     %w[os life].each { |name| commit(@vault.join(name)) }
     source, manifest = copied_source("future-source")
-    manifest["version"] = "3.2.0"
-    manifest["supported_updates"] << "3.2.0"
+    manifest["version"] = "3.3.0"
+    manifest["supported_updates"] << "3.3.0"
     source.join(path).open("a") { |file| file.puts "Synthetic future release improvement." }
     digest = Digest::SHA256.file(source.join(path)).hexdigest
     manifest.fetch("artifacts").find { |row| row["path"] == path }["sha256"] = digest
@@ -400,13 +404,13 @@ class UpdateContractTest < Minitest::Test
     apply(proposal, "--keep", path, source: source)
     fork = record.fetch("artifacts").fetch(path)
     assert_equal original_base, fork.fetch("fork_base")
-    assert_equal "3.2.0", fork.fetch("available_upstream").fetch("version")
+    assert_equal "3.3.0", fork.fetch("available_upstream").fetch("version")
     assert_equal owner_bytes, @vault.join(path).binread
     %w[os life].each { |name| commit(@vault.join(name)) }
     reviewed = plan(source: source)
     refute JSON.parse(reviewed.read).fetch("entries").find { |row| row["path"] == path }.fetch("upstream_changed")
     apply(reviewed, "--replace", path, source: source)
-    assert_equal "managed", record.fetch("artifacts").fetch(path).fetch("ownership")
+    assert_equal "owner-owned", record.fetch("artifacts").fetch(path).fetch("ownership")
     assert_equal source.join(path).binread, @vault.join(path).binread
     assert_equal "3.0.0", record.fetch("installed_source").fetch("version")
     validate
@@ -420,7 +424,7 @@ class UpdateContractTest < Minitest::Test
     source.join("setup/release-manifest.json").write(JSON.pretty_generate(manifest))
     proposal = plan("--only", "news-report", source: source)
     selection = JSON.parse(proposal.read)
-    assert_equal %w[foundation news-report], selection.fetch("selected_groups")
+    assert_equal %w[foundation governance news-report validation], selection.fetch("selected_groups")
     apply(proposal, source: source)
     validate
     manifest.fetch("artifacts").find { |row| row["path"] == "os/me.md" }["ownership"] = "managed"
@@ -585,6 +589,292 @@ class UpdateContractTest < Minitest::Test
       refute ok, output
       assert_includes output, "test failure"
       success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "plan", @vault, backup)
+      success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+      assert_equal before, UpdateSupport.inventory(@vault)
+    end
+  end
+
+  def test_personalized_31_full_update_preserves_content_without_fork_registration
+    historical(HISTORY_31)
+    paths = %w[AGENTS.md CLAUDE.md os/AGENTS.md os/manual.md os/skill-map.md os/skills/eod-wrap.md]
+    paths.each { |path| @vault.join(path).open("a") { |file| file.puts "Owner instruction: work on demand and preserve approved terminology." } }
+    @vault.join("os/manual.md").write("# My working guide\n\nUse [our rules](AGENTS.md).\n")
+    legacy = record
+    legacy["artifacts"]["os/skills/eod-wrap.md"]["ownership"] = "forked"
+    legacy["artifacts"]["os/skills/eod-wrap.md"]["fork_base"] = { "version" => "3.0.0", "sha256" => "a" * 64 }
+    @vault.join("os/release.json").write(JSON.pretty_generate(legacy))
+    protect
+    before = UpdateSupport.inventory(@vault)
+    candidate = @tmp.join("reviewed-rules.md")
+    candidate.write(@vault.join("os/AGENTS.md").read + "\n## Current owner maintenance authority\n\nLegacy Starter.OS-imposed fork and product-update restrictions no longer apply to instructions, manuals, or registries. Maintain these within owner authority; preserve independently chosen owner protections.\n")
+    notes = @tmp.join("governance-preservation.md")
+    notes.write("Retain every existing owner instruction and terminology verbatim. Only legacy product-imposed edit/fork restrictions are superseded by the final owner-maintenance authority section; independent owner protections are unchanged.\n")
+    backup = apply(plan("--adapt", "os/AGENTS.md=#{candidate}", "--review", notes))
+    (paths - ["os/AGENTS.md"]).each { |path| assert_equal before.fetch(path), UpdateSupport.state(@vault.join(path)) }
+    assert_equal candidate.binread, @vault.join("os/AGENTS.md").binread
+    assert_equal 2, record.fetch("format")
+    assert_equal "3.1.0", record.fetch("version")
+    assert_equal "adapted", record.dig("adoption", "kind")
+    assert_equal legacy.fetch("installed_at"), record.fetch("installed_at")
+    assert_equal legacy.dig("artifacts", "os/skills/eod-wrap.md", "fork_base"), record.dig("artifacts", "os/skills/eod-wrap.md", "fork_base")
+    validate
+    refute @vault.join("life/manual.md").exist?
+    %w[os life].each { |name| commit(@vault.join(name)) }
+    current = UpdateSupport.inventory(@vault)
+    refute apply(plan("--adapt", "os/AGENTS.md=#{candidate}", "--review", notes)).exist?
+    assert_equal current, UpdateSupport.inventory(@vault)
+    # Later commits are protected; do not rewind them to make restoration pass.
+    refusal("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+  end
+
+  def adaptation_inputs(path = "os/manual.md")
+    candidate = @tmp.join("candidate.md")
+    candidate.write(@vault.join(path).read + "\nReviewed improvement with existing owner instructions retained.\n")
+    notes = @tmp.join("preservation.md")
+    notes.write("Existing instructions retained verbatim. No removals or consolidated requirements. Candidate adds only the approved improvement; manual and root routes remain in place. Verify local health and the exact inventory, then review external protection separately.\n")
+    [candidate, notes]
+  end
+
+  def test_31_selected_exact_adaptations_include_root_and_restore
+    historical(HISTORY_31)
+    @vault.join("os/manual.md").write("# My manual\n\nOriginal owner instructions.\n")
+    @vault.join("os/me.md").open("a") { |file| file.puts "Manual route: os/manual.md." }
+    protect
+    before = UpdateSupport.inventory(@vault)
+    candidate, notes = adaptation_inputs
+    root = @tmp.join("root.md")
+    root.write(@vault.join("AGENTS.md").read + "\nOwner-approved entry clarification.\n")
+    proposal = plan("--only", "foundation", "--adapt", "os/manual.md=#{candidate}", "--adapt", "AGENTS.md=#{root}", "--review", notes)
+    assert_equal "adapted", JSON.parse(proposal.read).fetch("adoption")
+    backup = apply(proposal)
+    assert_equal candidate.binread, @vault.join("os/manual.md").binread
+    assert_equal root.binread, @vault.join("AGENTS.md").binread
+    assert_equal notes.binread, backup.join("preservation-notes.md").binread
+    assert_equal "3.1.0", record.fetch("version")
+    assert_equal 2, record.fetch("format")
+    assert_equal %w[AGENTS.md os/manual.md], record.fetch("adoption").fetch("adapted_paths")
+    assert_equal before.fetch("os/skills/news-report.md"), UpdateSupport.state(@vault.join("os/skills/news-report.md"))
+    validate
+    success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+    assert_equal before, UpdateSupport.inventory(@vault)
+  end
+
+  def test_adaptation_inputs_notes_source_and_plan_tampering_refuse_before_writes
+    historical(HISTORY_31)
+    protect
+    candidate, notes = adaptation_inputs
+    original = candidate.binread
+    notes_original = notes.binread
+    proposal = plan("--only", "foundation", "--adapt", "os/manual.md=#{candidate}", "--review", notes)
+    candidate.open("a") { |file| file.puts "Unreviewed candidate edit." }
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", @tmp.join("changed-candidate"))
+    candidate.binwrite(original)
+    notes.open("a") { |file| file.puts "Unreviewed removal." }
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", @tmp.join("changed-notes"))
+    notes.binwrite(notes_original)
+    value = JSON.parse(proposal.read)
+    value["adaptations"]["os/manual.md"]["sha256"] = "f" * 64
+    proposal.write(JSON.pretty_generate(value))
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", @tmp.join("changed-plan"))
+    source, _manifest = copied_source("changed-source")
+    source_plan = plan("--only", "foundation", "--adapt", "os/manual.md=#{candidate}", "--review", notes, source: source)
+    source.join("os/AGENTS.md").open("a") { |file| file.puts "Unreviewed source." }
+    refusal("ruby", source.join("setup/scripts/update-vault.rb"), "apply", @vault, source_plan, "--root-backup", @tmp.join("changed-source-backup"))
+    %w[changed-candidate changed-notes changed-plan changed-source-backup].each { |name| refute @tmp.join(name).exist? }
+  end
+
+  def test_adaptation_scope_guards_and_unknown_owner_file_transaction
+    historical(HISTORY_31)
+    nested = @vault.join("life/nested")
+    nested.mkpath
+    nested.join("note.md").write("Nested work")
+    @vault.join("life/.gitignore").open("a") { |file| file.puts "nested/" }
+    protect
+    success("git", "init", "-q", nested)
+    commit(nested)
+    candidate, notes = adaptation_inputs
+    %w[os/release.json os/RELEASE.json os/.git/config os/.codex/config.toml os/Skills/custom.md life/nested/note.md biz/shop/AGENTS.md ../escape.md].each_with_index do |path, i|
+      refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "plan", @vault, @tmp.join("refused-#{i}.json"), "--adapt", "#{path}=#{candidate}", "--review", notes)
+    end
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "plan", @vault, @tmp.join("unselected.json"), "--only", "news-report", "--adapt", "os/manual.md=#{candidate}", "--review", notes)
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "plan", @vault, @tmp.join("no-notes.json"), "--adapt", "os/manual.md=#{candidate}")
+    linked = @vault.join("life/linked.md")
+    linked.make_symlink(candidate)
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "plan", @vault, @tmp.join("linked.json"), "--adapt", "life/linked.md=#{candidate}", "--review", notes)
+    linked.unlink
+    before = UpdateSupport.inventory(@vault)
+    backup = apply(plan("--only", "news-report", "--adapt", "life/owner-guide.md=#{candidate}", "--review", notes))
+    assert_equal candidate.binread, @vault.join("life/owner-guide.md").binread
+    assert_equal "owner-owned", record.dig("artifacts", "life/owner-guide.md", "ownership")
+    success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+    assert_equal before, UpdateSupport.inventory(@vault)
+  end
+
+  def test_repeated_selected_and_adapted_runs_do_not_change_dates_or_create_backups
+    historical(HISTORY_31)
+    protect
+    apply(plan("--only", "news-report"))
+    %w[os life].each { |name| commit(@vault.join(name)) }
+    before = UpdateSupport.inventory(@vault)
+    refute apply(plan("--only", "news-report")).exist?
+    assert_equal before, UpdateSupport.inventory(@vault)
+    candidate, notes = adaptation_inputs
+    args = ["--only", "foundation", "--adapt", "os/manual.md=#{candidate}", "--review", notes]
+    apply(plan(*args))
+    %w[os life].each { |name| commit(@vault.join(name)) }
+    before = UpdateSupport.inventory(@vault)
+    refute apply(plan(*args)).exist?
+    assert_equal before, UpdateSupport.inventory(@vault)
+  end
+
+  def test_old_31_updater_refuses_full_partial_and_adapted_records
+    source = @tmp.join("old-source")
+    source.mkpath
+    archive = @tmp.join("old-source.tar")
+    success("git", "archive", "--format=tar", "--output", archive, HISTORY_31)
+    success("tar", "-xf", archive, "-C", source)
+    [[], ["--only", "news-report"], :adapted].each do |selection|
+      historical(HISTORY_31)
+      protect
+      old_plan = plan(source: source)
+      if selection == :adapted
+        candidate, notes = adaptation_inputs
+        selection = ["--only", "foundation", "--adapt", "os/manual.md=#{candidate}", "--review", notes]
+      end
+      backup = apply(plan(*selection))
+      assert_equal 2, record.fetch("format")
+      assert_includes refusal("ruby", source.join("setup/scripts/update-vault.rb"), "plan", @vault, @tmp.join("old-refusal-#{@sequence}.json")), "unsupported installed release record"
+      refusal("ruby", source.join("setup/scripts/update-vault.rb"), "apply", @vault, old_plan, "--root-backup", @tmp.join("old-backup-#{@sequence}"))
+      success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+      FileUtils.remove_entry(@vault)
+    end
+  end
+
+  def test_operational_health_checks_production_recovery_table_and_business_links
+    install
+    success("ruby", "os/scripts/add-business.rb", "sample-team", cwd: @vault)
+    business = @vault.join("biz/sample-team")
+    success("git", "init", "-q", business)
+    commit(business)
+    project = @vault.join("life/projects/client-work")
+    project.mkpath
+    project.join("client-work.md").write("# Client work\n\nAn independently protected real project.\n")
+    @vault.join("life/.gitignore").open("a") { |file| file.puts "projects/client-work/" }
+    success("git", "init", "-q", project)
+    commit(project)
+    recovery = @vault.join("os/recovery.md")
+    recovery.write(recovery.read.sub("|---|---|---|---|---|---|---|---|", "|---|---|---|---|---|---|---|---|\n| Client work | `life/projects/client-work` | private provider | unverified | none | none | configured but unverified | 2026-09-12 |"))
+    @vault.join("os/manual.md").write("# Owner's working manual\n\nDifferent wording, same valid system.\n")
+    @vault.join("CLAUDE.md").write("# Owner adapter\n\nRead AGENTS.md. Keep the owner's preferred language.\n")
+    protect
+    validate
+    project_git = project.join(".git")
+    moved = @tmp.join("project-git")
+    FileUtils.mv(project_git, moved)
+    assert_includes refusal("ruby", "os/validate-starter-os.rb", cwd: @vault), "not an independent Git repository"
+    FileUtils.mv(moved, project_git)
+    business.join("knowledge-map.md").open("a") { |file| file.puts "\n[Missing work](missing-project.md)\n" }
+    assert_includes refusal("ruby", "os/validate-starter-os.rb", cwd: @vault), "broken local link: biz/sample-team/knowledge-map.md"
+  end
+
+  def test_broken_owner_startup_route_fails_but_custom_wording_is_valid
+    install
+    protect
+    @vault.join("AGENTS.md").write("# My system\n\nRead os/AGENTS.md, then os/me.md. Follow nearest AGENTS.md in life and biz.\n")
+    validate
+    @vault.join("AGENTS.md").write("# My system\n\nRead missing-rules.md.\n")
+    assert_includes refusal("ruby", "os/validate-starter-os.rb", cwd: @vault), "does not route to os/AGENTS.md"
+  end
+
+  def test_percent_encoded_local_links_are_valid_owner_content
+    install
+    @vault.join("life/My Working Note.md").write("# Working note\n")
+    @vault.join("life/knowledge-map.md").open("a") { |file| file.puts "[Working note](My%20Working%20Note.md)\n" }
+    protect
+    validate
+    @vault.join("life/My Working Note.md").unlink
+    assert_includes refusal("ruby", "os/validate-starter-os.rb", cwd: @vault), "broken local link: life/knowledge-map.md"
+  end
+
+  def test_manual_fork_cannot_overwrite_exact_owner_context_adaptation
+    historical(HISTORY_31)
+    @vault.join("os/manual.md").open("a") { |file| file.puts "Owner manual instruction." }
+    protect
+    candidate, notes = adaptation_inputs("os/me.md")
+    args = ["--only", "foundation", "--adapt", "os/me.md=#{candidate}", "--review", notes]
+    assert_includes refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, plan(*args), "--root-backup", @tmp.join("overlap-refused"), "--fork", "os/manual.md=life/manual.md"), "overlaps the exact owner-context adaptation"
+    refute @tmp.join("overlap-refused").exist?
+    candidate.open("a") { |file| file.puts "Manual fork: life/manual.md." }
+    before = UpdateSupport.inventory(@vault)
+    backup = apply(plan(*args), "--fork", "os/manual.md=life/manual.md")
+    assert_equal candidate.binread, @vault.join("os/me.md").binread
+    validate
+    success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+    assert_equal before, UpdateSupport.inventory(@vault)
+  end
+
+  def test_selected_31_custom_governance_requires_narrow_review_without_foundation
+    historical(HISTORY_31)
+    rules = @vault.join("os/AGENTS.md")
+    rules.open("a") { |file| file.puts "\nOwner rule: keep our project terms and never send client messages without approval.\n" }
+    protect
+    before = UpdateSupport.inventory(@vault)
+    proposal = plan("--only", "news-report")
+    selection = JSON.parse(proposal.read)
+    assert_equal %w[governance news-report validation], selection.fetch("selected_groups")
+    assert selection.fetch("entries").find { |entry| entry["path"] == "os/AGENTS.md" }.fetch("governance_review_required")
+    refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", @tmp.join("no-governance-review"))
+    assert_includes refusal("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", @tmp.join("keep-governance"), "--keep", "os/AGENTS.md"), "legacy shared rules require"
+    refute @tmp.join("keep-governance").exist?
+    candidate = @tmp.join("owner-rules.md")
+    candidate.write(rules.read + "\nCurrent authority: inherited Starter.OS-only edit and fork restrictions in this system's manuals, skills, and maps are superseded. Maintain them within owner approval, retaining every independently chosen owner protection.\n")
+    notes = @tmp.join("owner-rules-review.md")
+    notes.write("The final current-authority paragraph supersedes only inherited product restrictions. All original instructions and project terminology are retained verbatim. Owner approval for client messages remains required. Root and other foundation files stay unchanged.\n")
+    backup = apply(plan("--only", "news-report", "--adapt", "os/AGENTS.md=#{candidate}", "--review", notes))
+    assert_equal candidate.binread, rules.binread
+    %w[AGENTS.md CLAUDE.md os/manual.md os/skill-map.md os/templates/note.md os/me.md].each do |path|
+      assert_equal before.fetch(path), UpdateSupport.state(@vault.join(path)), path
+    end
+    assert_equal "3.1.0", record.fetch("version")
+    assert_equal "adapted", record.dig("adoption", "kind")
+    validate
+    success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
+    assert_equal before, UpdateSupport.inventory(@vault)
+    apply(plan("--only", "news-report", "--adapt", "os/AGENTS.md=#{candidate}", "--review", notes))
+    rules.open("a") { |file| file.puts "\nLater authorized owner maintenance without fork registration.\n" }
+    %w[os life].each { |name| commit(@vault.join(name)) }
+    current = UpdateSupport.inventory(@vault)
+    refute apply(plan("--only", "news-report")).exist?
+    assert_equal current, UpdateSupport.inventory(@vault)
+    validate
+    assert_equal %w[governance validation], JSON.parse(plan("--only", "governance").read).fetch("selected_groups")
+  end
+
+  def test_adapted_transaction_interruption_restores_exact_root_and_owner_file_bytes
+    historical(HISTORY_31)
+    protect
+    before = UpdateSupport.inventory(@vault)
+    candidate, notes = adaptation_inputs
+    injector = @tmp.join("adapt-interrupt.rb")
+    injector.write(<<~'RUBY')
+      require ENV.fetch("TEST_SUPPORT")
+      module InterruptAdaptation
+        def atomic_write(root, path, bytes, **options)
+          result = super
+          raise IOError, "adaptation interruption" if root.to_s == ENV.fetch("TEST_TARGET") && path == ENV.fetch("TEST_BOUNDARY")
+          result
+        end
+      end
+      UpdateSupport.singleton_class.prepend(InterruptAdaptation)
+    RUBY
+    %w[AGENTS.md life/owner-guide.md os/release.json].each_with_index do |boundary, i|
+      root = @tmp.join("adapt-root.md")
+      root.write(@vault.join("AGENTS.md").read + "\nOwner-approved root extension.\n")
+      proposal = plan("--only", "foundation", "--adapt", "AGENTS.md=#{root}", "--adapt", "life/owner-guide.md=#{candidate}", "--review", notes)
+      backup = @tmp.join("adapt-interrupted-#{i}")
+      output, ok = command("ruby", SOURCE.join("setup/scripts/update-vault.rb"), "apply", @vault, proposal, "--root-backup", backup, env: { "RUBYOPT" => "-r#{injector}", "TEST_SUPPORT" => SOURCE.join("setup/scripts/update-support.rb").to_s, "TEST_TARGET" => @vault.to_s, "TEST_BOUNDARY" => boundary })
+      refute ok, output
+      assert_includes output, "adaptation interruption"
       success("ruby", SOURCE.join("setup/scripts/restore-vault.rb"), "apply", @vault, backup)
       assert_equal before, UpdateSupport.inventory(@vault)
     end

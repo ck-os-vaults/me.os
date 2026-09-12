@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-08-29
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -19,11 +19,11 @@ name.os/                 plain vault container; never a Git repository
 ├── AGENTS.md             generated agent entry
 ├── CLAUDE.md             thin agent adapter
 ├── os/                   shared OS repository
-│   ├── manual.md         protected plain-language explanation
+│   ├── manual.md         owner-maintained plain-language explanation
 │   ├── license.md        product license and attribution notice
 │   ├── release.json      generated installed-version record
 │   ├── skills/           portable reusable workflows
-│   └── templates/        managed starting structures
+│   └── templates/        owner-maintained starting structures
 ├── life/                 personal repository
 └── biz/                  plain container; never a Git repository
     └── <business>/       one repository for each confirmed real business

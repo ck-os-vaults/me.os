@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -40,6 +40,6 @@ source: owner
 ---
 ```
 
-Use `status: living`, `draft`, `superseded`, or `done`; `authority: canon`, `spec`, `reference`, or `exploratory`; and `source: owner`, `ai`, or `starter-os`. Use `starter-os` only for a protected upstream product artifact. A superseded file names its replacement.
+Use `status: living`, `draft`, `superseded`, or `done`; `authority: canon`, `spec`, `reference`, or `exploratory`; and `source: owner`, `ai`, or `starter-os`. `starter-os` records source origin, not an edit restriction. Preserve attribution when customizing and describe material adaptation honestly. A superseded file names its replacement.
 
 Routed knowledge should open with a short **Bottom line:** and **When to read this:**. Historical records remain history and never outrank current truth.

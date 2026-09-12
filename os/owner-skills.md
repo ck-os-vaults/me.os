@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-09-05
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: canon
 source: ai
@@ -19,4 +19,4 @@ source: ai
 
 Use `[[skill-name]]` for a real `os/skills/skill-name.md` file. Give it a concrete trigger and keep any schedule opt-in. Do not register the same name twice across the two maps. New files and this registry belong to the owner; normal updates preserve them.
 
-Keep project-specific methods with their project. If you deliberately customize a shipped skill, review its release ownership and choose an explicit fork through the update workflow. Do not edit `release.json` to make validation pass. Declared forks keep their original baseline for later reconciliation.
+Keep project-specific methods with their project. Maintain source-derived skills within owner authority, without fork registration or a product update. Keep both maps accurate; do not edit `release.json` to make validation pass. Baselines and existing fork history remain optional comparison evidence.

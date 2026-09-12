@@ -8,8 +8,8 @@ require "set"
 
 ROOT = Pathname.new(File.expand_path("../..", __dir__))
 OUTPUT = ROOT.join("setup", "release-manifest.json")
-RELEASE_VERSION = "3.1.0"
-RELEASE_DATE = "2026-09-05"
+RELEASE_VERSION = "3.2.0"
+RELEASE_DATE = "2026-09-12"
 
 OWNER_OWNED = Set.new(%w[
   AGENTS.md
@@ -17,6 +17,7 @@ OWNER_OWNED = Set.new(%w[
   os/owner-skills.md
   os/recovery.md
   os/integrations.md
+  os/starter-os.md
   life/knowledge-map.md
   life/now.md
   life/wiki/owner.md
@@ -26,17 +27,26 @@ OWNER_OWNED = Set.new(%w[
 HISTORICAL_SOURCES = {
   "2.0.0" => "bb7d3c744348c933b03181a7dffa0b6a8c8701ca",
   "2.1.0" => "dd03a11567d4aca1c6493656e0c0f4617f18f03b",
-  "3.0.0" => "01f60e03b4ad22b4f9135051df57d73f8a7701f4"
+  "3.0.0" => "01f60e03b4ad22b4f9135051df57d73f8a7701f4",
+  "3.1.0" => "efc04180e09726dd4c6f7d47c8b98d972ef0f74d"
 }.freeze
 UPDATE_GROUPS = {
-  "foundation" => { "description" => "Shared rules, personal extension support, helpers, and validation", "requires" => [] },
-  "morning-brief" => { "description" => "Optional Morning Brief recipe; does not enable a schedule", "requires" => [] },
-  "news-report" => { "description" => "Optional cited News Report recipe; does not enable a schedule", "requires" => [] },
-  "work-wrap" => { "description" => "Optional work closeout recipe", "requires" => [] },
-  "reconciliation" => { "description" => "Optional cross-project checkpoint recipe", "requires" => [] },
-  "security-watch" => { "description" => "Security review and optional read-only watch recipe", "requires" => [] }
+  # The two compatibility halves are co-required; dependency closure is a set.
+  "governance" => { "description" => "Shared owner-maintenance rules; customized legacy rules require exact reviewed reconciliation", "requires" => ["validation"] },
+  "validation" => { "description" => "Owner-controlled record compatibility, health checks, and absent owner registry seed", "requires" => ["governance"] },
+  "foundation" => { "description" => "Shared rules and personal extension support", "requires" => ["validation"] },
+  "project-tools" => { "description" => "Project and business creation helpers", "requires" => ["validation"] },
+  "morning-brief" => { "description" => "Optional Morning Brief recipe; does not enable a schedule", "requires" => ["validation"] },
+  "news-report" => { "description" => "Optional cited News Report recipe; does not enable a schedule", "requires" => ["validation"] },
+  "work-wrap" => { "description" => "Optional work closeout recipe", "requires" => ["validation"] },
+  "reconciliation" => { "description" => "Optional cross-project checkpoint recipe", "requires" => ["validation"] },
+  "security-watch" => { "description" => "Security review and optional read-only watch recipe", "requires" => ["validation"] }
 }.freeze
 ARTIFACT_GROUPS = {
+  "os/AGENTS.md" => "governance",
+  "os/validate-starter-os.rb" => "validation",
+  "os/owner-skills.md" => "validation",
+  "os/scripts/add-project.rb" => "project-tools", "os/scripts/add-business.rb" => "project-tools",
   "os/skills/daily-brief.md" => "morning-brief", "os/skills/news-report.md" => "news-report",
   "os/skills/eod-wrap.md" => "work-wrap", "os/skills/task-reconciliation.md" => "reconciliation",
   "os/skills/security-sweep.md" => "security-watch"
@@ -139,15 +149,15 @@ artifacts = source_targets.sort.map do |target, source|
   stop("missing source for #{target}: #{source}") unless source_path.file?
 
   stop("undeclared artifact ownership: #{target}") unless OWNER_OWNED.include?(target) || MANAGED_PATHS.include?(target)
-  ownership = OWNER_OWNED.include?(target) ? "owner-owned" : "managed"
+  ownership = "owner-owned"
   artifact = {
     "id" => target,
     "path" => target,
     "source" => source,
     "update_group" => ARTIFACT_GROUPS.fetch(target, "foundation"),
     "ownership" => ownership,
-    "permitted_editor" => ownership == "managed" ? "Starter.OS update or explicit owner fork" : "owner and approved agents",
-    "update" => ownership == "managed" ? "replace-if-unmodified" : "seed-once-then-preserve",
+    "permitted_editor" => "owner and approved agents",
+    "update" => OWNER_OWNED.include?(target) ? "seed-once-then-preserve" : "offer-if-unmodified",
     "deprecation" => "preserve-and-report",
     "sha256" => sha256(source_path)
   }
@@ -183,13 +193,14 @@ distribution_files.sort_by! { |entry| entry["path"] }
 
 manifest = {
   "format" => 1,
+  "installed_record_format" => 2,
   "product" => "Starter.OS",
   "version" => RELEASE_VERSION,
   "status" => RELEASE_DATE ? "released" : "unreleased",
   "released" => RELEASE_DATE,
   "supported_updates" => (["unversioned-legacy"] + HISTORICAL_SOURCES.keys + [RELEASE_VERSION]).uniq,
   "historical_sources" => HISTORICAL_SOURCES,
-  "supported_partial_updates" => ["3.0.0", RELEASE_VERSION].uniq,
+  "supported_partial_updates" => ["3.0.0", "3.1.0", RELEASE_VERSION].uniq,
   "update_groups" => UPDATE_GROUPS,
   "licenses" => {
     "code" => "MIT",

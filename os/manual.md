@@ -1,16 +1,16 @@
 ---
 type: manual
 created: 2026-08-30
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: reference
 source: starter-os
 ---
 
-# How Starter.OS works
+# How your system works
 
-This protected manual explains your foundation. An agent may read and explain it, but may not rewrite or personalize it during normal work.
+This is your manual. It explains your foundation and can be maintained with your approval as your system develops.
 
 ## Your second brain and Chief
 
@@ -24,7 +24,7 @@ An agent is the tool doing work; a model is the AI engine it uses; a harness or 
 - `life/` holds personal notes, knowledge, decisions, and projects.
 - `biz/` holds real businesses, added only when needed.
 
-Your private system takes your chosen name. Root `AGENTS.md` belongs to you and points to `os/AGENTS.md`, `os/me.md`, nearest project/business instructions, and `os/release.json` for upstream identity. Keep lasting personal rules in their protected home. The root itself is not a Git repository, so its small entry files need full-file backup.
+Your private system takes your chosen name. Root `AGENTS.md` belongs to you and points to `os/AGENTS.md`, `os/me.md`, and nearest project/business instructions. Origin and update information is optional reference in `starter-os.md`, not routine startup context. Keep lasting personal rules in their protected home. The root itself is not a Git repository, so its small entry files need full-file backup.
 
 A project is work with a real outcome; a business has its own context and repository. Each gets one clear home. Extra personal content and reviewed agent settings are preserved. A notice about old folders or custom layout invites review, not deletion. The public `setup/` folder belongs only to the installer.
 
@@ -46,7 +46,7 @@ Git does not cover every ignored, untracked, hidden, root-level, or external fil
 
 ## Skills, integrations, and automations
 
-A skill is a saved method for repeated work. Product skills are listed in `skill-map.md`; your personal skills live in `skills/` and are registered in owner-owned `owner-skills.md`. Adding a personal method should not require editing a protected product file.
+A skill is a saved method for repeated work. Source-derived skills are listed in `skill-map.md`; your personal skills live in `skills/` and are registered in `owner-skills.md`. Both maps belong to you. Each skill needs one registration; you can maintain an existing method without a product release or fork ceremony.
 
 An integration connects another service. An automation runs accepted work on a schedule. Neither becomes active merely because a recipe is installed. Optional recipes include a Morning Brief, a cited News Report, System Security Watch, and cross-project reconciliation. Planning and questionnaires are choices, not compulsory Chief behavior. Security Watch stays read-only, quiet when checks finish cleanly, and reports incomplete coverage.
 
@@ -62,13 +62,13 @@ A new release is reference material for your agent and you. It does not authoriz
 4. Apply only that plan.
 5. Verify preservation and explain the result and recovery route.
 
-Personal files and preferences stay yours. Unchanged product files are eligible for an approved update; eligibility alone is not permission. A changed product file needs a decision. A fork is your explicitly customized version: keep it, reconcile it, or return to the reviewed upstream version. The original baseline stays available when known, and later improvements should still be visible.
+All your installed files stay yours, including rules, skills, maps, and this manual. Unchanged source-derived files are eligible for an approved update; eligibility alone is not permission. Changed files are preserved by default. You can keep them, adapt a useful improvement, or explicitly adopt reviewed upstream content. Original baselines and legacy fork history stay available when known; they do not restrict your maintenance.
 
-Selected improvement groups may be adopted without taking the full release. Their dependencies must fit. A highly customized system may need an agent-assisted adaptation instead of the standard updater. The receipt distinguishes selected changes from full release adoption. Your instructions must never be silently replaced or summarized away.
+Selected improvement groups may be adopted without taking the full release. Their dependencies must fit. The update transaction can also protect exact agent-assisted adaptations to supported OS/life and root-agent files. Temporary preservation notes identify where every removed or consolidated instruction survives, or its explicit removal approval. The receipt distinguishes selected and adapted changes from full release adoption and retains the original base for those changes. Your instructions must never be silently replaced or summarized away.
 
 ## Validation and restoration
 
-Validation checks local structure, required routing, registries, release identity, protected files, and readable Git history, and checks active files for common secret patterns. It does not prove every link, every privacy risk, hosted backup, or working schedule. Those need separate review. Foundation-only validation reports deferred Git and cannot certify full protection.
+Validation checks local structure, local Markdown/wiki links, registries, provenance records, and readable Git history, including paths declared in the recovery table. It checks active files for common secret patterns. Your edits are not integrity failures. The separate public-source check verifies release bytes. Neither check proves semantic preservation, external links, every privacy risk, hosted backup, or working schedules. Those need separate review. Foundation-only validation reports deferred Git and cannot certify full protection.
 
 An update creates an external transaction backup with the original commits, root entries, original and proposed write bytes, and an inventory. Its restore preview refuses to discard later owner work or use changed backup bytes. Restoration changes only the update's recorded paths and verifies the protected inventory. It does not reset remote history. Keep recovery until you accept the update.
 
@@ -76,6 +76,6 @@ An update creates an external transaction backup with the original commits, root
 
 Your agent may do ordinary reversible work within an approved task. It asks for meaningful choices and authority for structural changes, deletion, messages, publication, spending, access changes, private-data movement, and automation. Approval continues for the same unchanged actions. Checking an update is not permission to apply it.
 
-This manual explains; current owner instructions and the declared operating hierarchy control behavior. It is managed by Starter.OS. If you want a personal explanation, explicitly create an owner-owned fork such as `life/manual.md` and route it from `os/me.md`. The approved manual-fork update does that routing within its recovery transaction. Future updates keep the product manual available for comparison.
+This manual explains; current owner instructions and the declared operating hierarchy control behavior. Maintain it in place when that is useful. If your system already routes to a personal manual elsewhere, keep that route and update its actual home. A separate product copy or relocation is not required.
 
 When unsure, ask Chief to explain the relevant part and the next necessary choice.

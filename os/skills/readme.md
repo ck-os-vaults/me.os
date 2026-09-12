@@ -1,8 +1,8 @@
 ---
 type: map
 created: 2026-08-11
-updated: 2026-09-05
-reviewed: 2026-09-05
+updated: 2026-09-12
+reviewed: 2026-09-12
 status: living
 authority: reference
 source: ai
@@ -18,4 +18,4 @@ Every reusable shared workflow must live here and be registered in `../skill-map
 
 Audit this folder during quarterly vault maintenance and after major agent, model, tool, or repository changes. Remove stale or unavailable-tool skills only after owner approval and verified recovery; update the workflow, registry, lifecycle dates, and any adapter together.
 
-Personal additions belong to the owner and are registered in `../owner-skills.md`. Read that registry alongside the managed `../skill-map.md`; do not change the product map during personalization.
+Personal additions belong to the owner and are registered in `../owner-skills.md`. Read that registry alongside `../skill-map.md`. Both maps are owner-maintained; keep each skill registered exactly once.

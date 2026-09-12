@@ -4,7 +4,7 @@ A free foundation for your own second brain and AI Chief of Staff.
 
 Your files hold lasting knowledge, preferences, decisions, and project context. Your chosen agent helps you work with them. You shape the system through use, keep control of your information, and can change models or tools without rebuilding your knowledge.
 
-**Starter.OS 3.1.0 is the current release on `main`.** Share the repository link below to get started; no version choice or special prompt is needed.
+**Starter.OS 3.2.0 is the current release on `main`.** Share the repository link below to get started; no version choice or special prompt is needed.
 
 ## Start with one link
 
@@ -40,7 +40,7 @@ This public repository is a blueprint, never your private working copy. Do not p
 
 ## Releases and maintainers
 
-Normal setup uses the current release, **3.1.0**, resolved to its exact commit through the `v3.1.0` release tag. This checkout's `setup/release-manifest.json` records its released status. Historical versions remain in Git history for comparison and recovery. Maintainer builds marked unreleased still require an explicit choice; the current release needs no special flag.
+Normal setup uses the current release, **3.2.0**, resolved to its exact commit through the `v3.2.0` release tag. This checkout's `setup/release-manifest.json` records its released status. Historical versions remain in Git history for comparison and recovery. Maintainer builds marked unreleased still require an explicit choice; the current release needs no special flag.
 
 See [CHANGELOG.md](CHANGELOG.md) for changes, compatibility, limitations, and recovery. Run `ruby setup/scripts/validate-starter-kit.rb` for the complete local release suite. Human setup, hosted recovery, schedules, and environment support require separate acceptance evidence.
 
