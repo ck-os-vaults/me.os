@@ -27,6 +27,7 @@ flowchart LR
 | File locations and Git backups | [Vault map](vault-map.md) |
 | Sources, current state, decisions, and daily notes | [Retrieval](retrieval.md) |
 | Services and access | [Integrations](integrations.md) |
+| File and structure checks | [Scripts](scripts/readme.md) |
 | Reusable workflows | [Skills](skills/readme.md) |
 
 ## Personal and business work
@@ -34,4 +35,4 @@ flowchart LR
 | Area | Start here |
 |---|---|
 | Personal context and projects | [Life map](../life/knowledge-map.md) |
-| Businesses | The relevant business’s local AGENTS.md and map; add actual links when a business exists |
+| Businesses | [Business folder](../biz/readme.md); add actual business links when they exist |

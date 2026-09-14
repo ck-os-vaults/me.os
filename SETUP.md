@@ -30,14 +30,14 @@ Done when the original work is recoverable and every existing file affected by s
 
 ## 3. Personalize the universal files
 
-Copy only the template’s `os/` and `life/` content into the private workspace. Keep the public clone separate. Do not copy public Git history, root template instructions, README, this setup file, maintainer scripts, `.github/`, or upstream remotes into the owner’s system.
+Copy the template’s `os/`, `life/`, and `biz/` content into the private workspace. Keep the public clone separate. Do not copy public Git history, root template instructions, README, this setup file, `.github/`, or upstream remotes into the owner’s system.
 
 - Replace `OWNER_NAME`, `WORKSPACE_NAME`, and `SETUP_DATE` with confirmed values and the actual setup date. On a new file, set creation/update/review dates to that day; preserve original dates and record bodies on existing files.
 - Adapt the few personal lines in `os/AGENTS.md`; keep its universal collaboration and memory guidance unless the owner prefers otherwise. Put deeper background in `life/wiki/owner.md`, optionally renaming it and updating its links.
 - Populate `life/now.md` with confirmed current priorities and links. Put project details in their project homes. Remove unused placeholder prose and blank example rows.
 - Keep the existing OS file set. Add only the person’s needed context to those files; do not add manuals, recovery documents, release receipts, separate “me” files, or organizational scaffolding.
 - Create personal project folders only for actual work. Each needs a concise project overview with current state and next action. Add project-specific AGENTS.md only when there are local instructions to communicate.
-- Create `biz/` only for actual businesses. Give each business its own private repository, AGENTS.md pointing to `../../os/AGENTS.md`, a small knowledge map, and a current status document. Preserve existing business content and use established decision records.
+- Keep `biz/` as the default business container. Create subfolders only for actual businesses. Give each business its own private repository, AGENTS.md pointing to `../../os/AGENTS.md`, a small knowledge map, and a current status document. Preserve existing business content and use established decision records.
 - Keep records to daily notes, decisions, and the README. Put existing other material in its best project, Wiki, or Documents home. Preserve historical bodies and label unresolved facts.
 - Retain the compact tables, narrow Mermaid diagrams, meaningful headings, and relative Markdown links. Add real project/business links to the maps.
 - Skills start empty. Keep `personal/` for owner workflows and `vendor/` for reviewed third-party packages. Install only skills the owner actually needs, using the agent’s supported method. Retain third-party notices and verify discovery before claiming an installation.
@@ -67,7 +67,7 @@ Check the personalized workspace itself:
 - Read root → OS → Life/business instructions and follow the maps. Verify relative file links and heading anchors; update moved paths. Leave preserved historical links clearly historical.
 - Confirm no setup placeholders, source-product instructions, public remotes, or copied maintainer automation remain in operating files.
 - Check that current facts, durable decisions, and daily continuity use their correct homes, and that the owner’s original content is preserved.
-- Run any existing applicable project checks. Verify optional installed skills using the actual agent’s discovery mechanism.
+- Run `python3 os/scripts/validate.py --workspace` from the workspace root and any existing applicable project checks. Verify optional installed skills using the actual agent’s discovery mechanism.
 - Add a brief setup entry to today’s Life daily note. Save only necessary interview context; honor any request not to save particular information.
 - Recheck for edits made during setup. Commit the final eligible changes to main, push, and compare local and remote commit IDs. Account for any remaining uncommitted files or stashes.
 

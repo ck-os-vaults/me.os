@@ -14,7 +14,7 @@ Give your agent this link and say:
 |---|---|
 | `os/` | Your agent instructions, navigation, integrations, and memory guidance |
 | `life/` | Your context, current priorities, projects, decisions, and daily notes |
-| `biz/` | Separate business work, created when needed |
+| `biz/` | Separate business work |
 
 The finished workspace uses your name and context. No product account, paid license, update subscription, or connection back to this repository is required. Your AI and other services may have their own costs.
 
@@ -26,6 +26,6 @@ Improvements here benefit new setups. Existing users can ask their agent to adop
 
 ## Maintaining this template
 
-Edit the universal files and the single setup workflow. Run `python3 scripts/validate.py` and `python3 scripts/test_template.py` before publishing. These checks validate the template and a synthetic personalized fixture; they do not establish that every agent or computer can complete setup.
+Edit the universal files and the single setup workflow. Run `python3 os/scripts/validate.py` and `python3 os/scripts/test_template.py` before publishing. These checks validate the template and a synthetic personalized fixture; they do not establish that every agent or computer can complete setup.
 
-The old releases remain historical Git references, not the setup route. This template uses the [MIT license](LICENSE). Maintainer scripts, repository history, and `.github/` are not installed into personal workspaces.
+The old releases remain historical Git references, not the setup route. This template uses the [MIT license](LICENSE). Repository history and `.github/` are not installed into personal workspaces.

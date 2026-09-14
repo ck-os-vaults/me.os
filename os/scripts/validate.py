@@ -10,7 +10,7 @@ REQUIRED = ('AGENTS.md', 'os/AGENTS.md', 'os/CLAUDE.md', 'os/knowledge-map.md',
             'os/retrieval.md', 'os/vault-map.md', 'os/integrations.md', 'os/skills/readme.md',
             'life/AGENTS.md', 'life/knowledge-map.md', 'life/now.md', 'life/wiki',
             'life/projects/readme.md', 'life/documents/readme.md',
-            'life/records/readme.md', 'life/records/decisions.md', 'life/records/daily')
+            'biz/readme.md', 'os/scripts/readme.md', 'life/records/readme.md', 'life/records/decisions.md', 'life/records/daily')
 TOKENS = ('OWNER_NAME', 'WORKSPACE_NAME', 'SETUP_DATE')
 RETIRED = ('os/me.md', 'os/recovery.md', 'os/manual.md', 'os/release.json',
            'os/skill-map.md', 'os/starter-os.md', 'os/templates', 'os/owner-skills.md')
@@ -68,7 +68,7 @@ def validate(root, workspace=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('root', nargs='?', default=str(Path(__file__).resolve().parents[1]))
+    parser.add_argument('root', nargs='?', default=str(Path(__file__).resolve().parents[2]))
     parser.add_argument('--workspace', action='store_true', help='Require personalized values')
     args = parser.parse_args()
     errors = validate(args.root, args.workspace)

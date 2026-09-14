@@ -20,7 +20,7 @@ Use this map for file placement, repository boundaries, and recovery.
 WORKSPACE_NAME/       plain workspace container
 ├── os/              shared guidance repository
 ├── life/            personal repository
-└── biz/             business container, created when needed
+└── biz/             business container
     └── <business>/  independent business repository
 ```
 
