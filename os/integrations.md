@@ -1,33 +1,27 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-09-05
-reviewed: 2026-09-05
-status: draft
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
+status: living
 authority: reference
 source: ai
 ---
 
-# integrations and automations
+# Integrations
 
-**Bottom line:** Record only external systems and scheduled routines that actually exist, without secret values.
+[← Knowledge map](knowledge-map.md)
 
-**When to read this:** Before connecting, changing, scheduling through, publishing through, or retiring an external system.
+Keep the services that matter to this workspace: account access, APIs, paid subscriptions, Git hosting, and backups. Record confirmed facts; a subscription is not proof of connected access. Store credentials in a credential manager, never here.
 
-## External systems
+## Services
 
-| System | Owner or path | State | Purpose | Access boundary | Checked |
-|---|---|---|---|---|---|
+| Service | Purpose | Access / status |
+|---|---|---|
+| Add confirmed services during setup | | |
 
-## Scheduled routines
+Keep explanations outside the table. For each service, record the relevant account label, plan or cost if known, available access method, and any setup still pending. Never include passwords, tokens, or account numbers.
 
-| Routine | Scheduler | State | Schedule and timezone | Destination | Canonical skill | Checked |
-|---|---|---|---|---|---|---|
+## Backups
 
-Use `verified active`, `configured but unverified`, `unavailable`, `owner declined`, `deferred`, or `retired`. Never treat configuration alone as proof.
-
-Record where an authorized credential manager supplies access, never the credential itself. Providers, browsers, research services, password managers, hosting, plugins, and schedulers are optional unless the owner has adopted them. Record local and cloud connections separately when their permissions or availability differ.
-
-Every accepted scheduled routine must be verified by name, schedule, timezone, destination, instructions, source access, runtime or model, active status, and first eligible run. Prefer an existing persistent home-base destination when supported. Update an equivalent routine instead of creating a duplicate or a new task for every run.
-
-Remember declined or deferred suggestions and revisit only on owner request or materially changed circumstances. A model/harness change requires capability verification; it does not authorize replacing the owner workflow.
+Use the [repository inventory](vault-map.md#repository-inventory) for Git destinations. Record the confirmed method for files outside Git and the last verification here. If none is configured, state that it is pending.

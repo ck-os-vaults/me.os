@@ -1,3 +1,3 @@
-# Claude entry
+# Agent entry
 
-Read `AGENTS.md` and follow the shared operating chain it names.
+Read [AGENTS.md](AGENTS.md).

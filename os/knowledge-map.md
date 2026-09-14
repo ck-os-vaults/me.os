@@ -1,29 +1,37 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-09-12
-reviewed: 2026-09-12
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
 authority: canon
 source: ai
 ---
 
-# operating knowledge map
+# Knowledge map
 
-**Bottom line:** Route each question to one owning source before loading more context.
+Start with the relevant area and load only what the task needs.
 
-**When to read this:** Read when ownership or the current source is unclear.
+```mermaid
+flowchart LR
+    home[Your workspace] --> os[OS · guidance]
+    home --> life[Life · personal work]
+    home --> biz[Business · separate homes]
+```
 
-- Plain-language system explanation: `manual.md`, or the existing manual route in `me.md`
-- Product license boundary and attribution: `license.md`
-- Shared operating behavior: `AGENTS.md` and `me.md`
-- Structure and ownership: `vault-map.md`
-- Retrieval and metadata: `retrieval.md`
-- Git, backup, and restore: `recovery.md`
-- External systems and scheduled routines: `integrations.md`
-- Portable workflows and classifications: `skill-map.md` and owner-owned `owner-skills.md`
-- Optional origin/update reference: `starter-os.md`; installed source and adoption evidence: `release.json`
-- Personal work: `../life/knowledge-map.md`
-- Business work: `../biz/<business>/AGENTS.md`
+## Shared guidance
 
-The manual explains. Canonical operating and project files control behavior.
+| When you need | Open |
+|---|---|
+| Personal context and collaboration preferences | [Agent instructions](AGENTS.md) |
+| File locations and Git backups | [Vault map](vault-map.md) |
+| Sources, current state, decisions, and daily notes | [Retrieval](retrieval.md) |
+| Services and access | [Integrations](integrations.md) |
+| Reusable workflows | [Skills](skills/readme.md) |
+
+## Personal and business work
+
+| Area | Start here |
+|---|---|
+| Personal context and projects | [Life map](../life/knowledge-map.md) |
+| Businesses | The relevant business’s local AGENTS.md and map; add actual links when a business exists |

@@ -1,8 +1,8 @@
 # GitHub automation
 
-> **Maintainers only.** This folder operates the public Starter.OS distribution. It is not an owner setup, migration, update, or private-repository mirroring guide.
+> **Maintainers only.** This folder operates the public me.os template. It is not an owner setup, migration, update, or private-repository mirroring guide.
 
-GitHub `ck-os-vaults/starter-os-public` is canonical. GitLab `ck-os-vaults/starter.os` is its read-only downstream backup mirror.
+GitHub `ck-os-vaults/me.os` is canonical. GitLab `ck-os-vaults/starter.os` is its read-only downstream backup mirror.
 
 `workflows/gitlab-mirror.yml` mirrors every GitHub branch and tag to GitLab after a push, removes GitLab refs that no longer exist on GitHub, verifies exact parity, and runs hourly to catch Dependabot events that cannot access Actions secrets.
 

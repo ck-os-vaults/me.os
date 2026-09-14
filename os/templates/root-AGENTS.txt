@@ -1,6 +1,0 @@
-# {{SYSTEM_NAME}} agent entry
-
-This is {{SYSTEM_NAME}}, the owner's private system. It belongs to the owner and may be changed to fit them.
-
-Read `os/AGENTS.md` first, then `os/me.md`.
-When working inside `life/` or `biz/<business>/`, follow the nearest `AGENTS.md`.

@@ -1,24 +1,32 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
-authority: canon
+authority: reference
 source: ai
 ---
 
-# life knowledge map
+# Life map
 
-**Bottom line:** Route personal work to its project, durable background to Wiki, and chronology to Records.
+[← OS map](../os/knowledge-map.md)
 
-**When to read this:** Read when the correct personal source is unclear.
+Personal context, current priorities, and the records that help you resume.
 
-- Current state: `now.md`
-- Durable owner background: `wiki/owner.md` (personalize its contents and keep the path)
-- Active personal work: `projects/readme.md`
-- Retained personal documents without a project or business owner: `documents/readme.md`
-- Confirmed personal decisions: `records/decisions.md`
-- Record rules: `records/readme.md`
+```mermaid
+flowchart LR
+    life[Life] --> now[Now · priorities]
+    life --> projects[Projects · current work]
+    life --> wiki[Wiki · lasting context]
+    life --> records[Records · continuity]
+```
 
-Documents is not an inbox or archive. Removed material remains recoverable through Git rather than an internal archive.
+| When you need | Open |
+|---|---|
+| Life-specific instructions | [AGENTS.md](AGENTS.md) |
+| Current priorities and constraints | [Now](now.md) |
+| Active personal projects | [Projects](projects/readme.md) |
+| Personal background | [Background](wiki/owner.md) |
+| Daily notes and confirmed decisions | [Records](records/readme.md) |
+| Supporting documents | [Documents](documents/readme.md) |

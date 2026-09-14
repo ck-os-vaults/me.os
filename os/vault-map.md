@@ -1,48 +1,56 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-09-12
-reviewed: 2026-09-12
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
 authority: canon
 source: ai
 ---
 
-# vault map
+# Vault map
 
-**Bottom line:** One vault contains shared operating context in `os/`, the owner's personal world in `life/`, and independently owned businesses in `biz/`.
+[← Knowledge map](knowledge-map.md)
 
-**When to read this:** Read before creating, moving, renaming, removing, or changing a repository boundary.
+Use this map for file placement, repository boundaries, and recovery.
+
+## Structure
 
 ```text
-name.os/                 plain vault container; never a Git repository
-├── AGENTS.md             generated agent entry
-├── CLAUDE.md             thin agent adapter
-├── os/                   shared OS repository
-│   ├── manual.md         owner-maintained plain-language explanation
-│   ├── license.md        product license and attribution notice
-│   ├── release.json      generated installed-version record
-│   ├── skills/           portable reusable workflows
-│   └── templates/        owner-maintained starting structures
-├── life/                 personal repository
-└── biz/                  plain container; never a Git repository
-    └── <business>/       one repository for each confirmed real business
+WORKSPACE_NAME/       plain workspace container
+├── os/              shared guidance repository
+├── life/            personal repository
+└── biz/             business container, created when needed
+    └── <business>/  independent business repository
 ```
 
-Owner-chosen app and agent settings such as `.obsidian/`, `.codex/`, `.claude/`, or `.agents/` may exist. Preserve them and review permissions before enabling them; their presence grants no execution authority. The public `setup/` folder contains installation files and never belongs in an installed vault.
+The workspace root and `biz/` are plain containers. Each listed repository has independent history. Keep existing repository boundaries when adapting an established workspace; update this map to its actual layout.
 
-## Routing
+## Repository inventory
 
-| Material | Owner |
+| Path | Private remote | State |
+|---|---|---|
+| `os/` | Set during setup | Not verified |
+| `life/` | Set during setup | Not verified |
+
+Record actual destinations and the last verified sync. A configured remote alone does not prove backup health.
+
+## File ownership
+
+| Information | Home |
 |---|---|
-| shared rules, manual, maps, templates, or portable workflow | `os/` |
-| installed release identity | `os/release.json` |
-| current personal state | `life/now.md` |
-| durable personal knowledge | `life/wiki/` |
-| active personal work | `life/projects/<project>/` |
-| retained personal document without a clearer owner | `life/documents/` |
-| durable personal decision | `life/records/decisions.md` |
-| business material and implementation | `biz/<business>/` |
-| obsolete material | remove only after approval and verified recovery |
+| Shared operating guidance | `os/` |
+| Cross-project personal priorities | [Now](../life/now.md) |
+| Durable personal knowledge | `life/wiki/` |
+| Personal project work | `life/projects/<project>/` |
+| Supporting personal documents | `life/documents/` or the owning project |
+| Daily continuity and decisions | [Records](../life/records/readme.md) |
+| Business work | Its own `biz/<business>/` repository |
 
-Unknown files are owner-owned. Do not create a catch-all inbox or archive by default. Preserve an owner-created archive; its name does not make its contents obsolete. If ownership is unclear, ask whether the material belongs to an existing project, a new real project, Wiki, Documents, or a business.
+Use lowercase kebab-case paths and date-named daily notes. Keep useful content in one owning location and link to it.
+
+## Restore and verify
+
+Clone the private repositories into the recorded paths, restore separately backed-up files, and verify the links, latest commits, and actual project checks before resuming work. Preserve unpublished work before any restore or sync. Investigate divergent history instead of overwriting it.
+
+Git does not back up uncommitted or unpushed changes, ignored attachments, root entry files, app settings, or credentials. Record the actual separate backup method in [integrations](integrations.md); mark missing protection honestly.

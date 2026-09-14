@@ -1,17 +1,17 @@
 ---
 type: identity
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
-status: draft
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
+status: living
 authority: reference
 source: ai
 ---
 
-# owner
+# Personal background
 
-**Bottom line:** Durable personal background that helps the agent understand the owner beyond the minimal startup briefing.
+[← Life map](../knowledge-map.md)
 
-**When to read this:** Read only when deeper personal context materially improves the work.
+Use for lasting background that helps collaboration but does not need to load at startup. Keep the minimum everyday context in [OS instructions](../../os/AGENTS.md).
 
-Confirm useful facts during onboarding. Keep this factual, concise, and distinct from current state in `../now.md` and agent-facing collaboration rules in `../../os/me.md`.
+Add confirmed background from the setup interview. Leave unknowns unstated and preserve the owner’s words where useful.

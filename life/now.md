@@ -1,31 +1,17 @@
 ---
 type: status
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
-status: draft
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
+status: living
 authority: reference
 source: ai
 ---
 
-# now
+# Now
 
-**Bottom line:** Last confirmed snapshot of the owner's current priorities, constraints, transitions, and open decisions.
+[← Life map](knowledge-map.md)
 
-**When to read this:** Read for planning, prioritization, or when current capacity materially changes a task.
+A short view of current personal priorities, availability, and constraints. Project details stay in their owning documents.
 
-## Current priorities
-
-Confirm during onboarding. Keep no more than three by default.
-
-## Constraints and transitions
-
-Confirm only what materially changes planning.
-
-## Open decisions
-
-List each decision and what would resolve it.
-
-## Currency gaps
-
-Name any area that is not currently known. Never present old personal facts as current without confirmation.
+No current priorities have been confirmed yet. Replace this paragraph with dated, confirmed context during setup and link to the relevant projects. Update when the owner’s situation changes; daily progress belongs in [records](records/readme.md).

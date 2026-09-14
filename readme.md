@@ -1,47 +1,31 @@
-# Starter.OS
+# me.os
 
-A free foundation for your own second brain and AI Chief of Staff.
+A simple starting point for a personal workspace your agent can help you run.
 
-Your files hold lasting knowledge, preferences, decisions, and project context. Your chosen agent helps you work with them. You shape the system through use, keep control of your information, and can change models or tools without rebuilding your knowledge.
+Give your agent this link and say:
 
-**Starter.OS 3.2.0 is the current release on `main`.** Share the repository link below to get started; no version choice or special prompt is needed.
+> Read https://github.com/ck-os-vaults/me.os, find SETUP.md, and set up my personal workspace. Ask me the short interview together, then handle the rest.
 
-## Start with one link
+[SETUP.md](SETUP.md) is the complete setup workflow. Use an agent that can read the repository, edit your files, and run Git. It will use what you already have, ask a few questions, and organize your own private workspace.
 
-Give a file-capable agent this repository:
+## What you get
 
-**https://github.com/ck-os-vaults/starter-os-public**
+| Home | Purpose |
+|---|---|
+| `os/` | Your agent instructions, navigation, integrations, and memory guidance |
+| `life/` | Your context, current priorities, projects, decisions, and daily notes |
+| `biz/` | Separate business work, created when needed |
 
-The link is the entire prompt. You can also say:
+The finished workspace uses your name and context. No product account, paid license, update subscription, or connection back to this repository is required. Your AI and other services may have their own costs.
 
-> Check this out and find the install that fits us best.
+## After setup
 
-The agent reads `AGENTS.md`, checks what you already have and what your tools can do, then guides a new installation or an update. You do not need to find a setup file, choose a technical architecture, or learn Git commands. If the agent cannot read the instructions or work in your private files, it must explain the missing capability. A fallback is: “Read the root AGENTS.md and guide me through the appropriate route.”
+Work with your agent normally. It maintains current context and useful daily records as you work. You own the files and can change the structure and instructions.
 
-## Your foundation
+Improvements here benefit new setups. Existing users can ask their agent to adopt a specific improvement; there is no automatic updater or template sync.
 
-- `os/`: operating guidance, preferences, reusable workflows, and recovery.
-- `life/`: personal knowledge, notes, and projects.
-- `biz/`: businesses, created only when you need them.
+## Maintaining this template
 
-Your private system takes your chosen name. Setup establishes protection early, adds confirmed preferences, checks the foundation, and explains how to begin. You choose your first task afterward. Projects, example exercises, and automations are not required.
+Edit the universal files and the single setup workflow. Run `python3 scripts/validate.py` and `python3 scripts/test_template.py` before publishing. These checks validate the template and a synthetic personalized fixture; they do not establish that every agent or computer can complete setup.
 
-Private GitHub repositories are the recommended starting protection. An existing suitable host can stay. You can decline or defer; the agent explains what remains unprotected without repeatedly asking. You handle sign-in and secrets privately. The agent handles technical steps within your approval.
-
-## Updates respect your system
-
-A new release is reference material for an implementation plan you agree on with your agent. It does not authorize replacing your system with a new template. Review relevant benefits, dependencies, and effects; adopt, adapt, decline, or defer improvements. Apply only the agreed plan with verified recovery. Your preferences, files, and customizations remain yours.
-
-## Tools, privacy, and cost
-
-Starter.OS is free. AI subscriptions and external services may have separate costs. No specific model or harness is required; use verified capabilities in the environment you already have. Cloud AI can help operate owner-controlled files. Scheduled work needs an available runtime and separately verified access.
-
-This public repository is a blueprint, never your private working copy. Do not personalize it or use a public fork to hold private information. Never store passwords, tokens, recovery codes, or private keys in the system or chat.
-
-## Releases and maintainers
-
-Normal setup uses the current release, **3.2.0**, resolved to its exact commit through the `v3.2.0` release tag. This checkout's `setup/release-manifest.json` records its released status. Historical versions remain in Git history for comparison and recovery. Maintainer builds marked unreleased still require an explicit choice; the current release needs no special flag.
-
-See [CHANGELOG.md](CHANGELOG.md) for changes, compatibility, limitations, and recovery. Run `ruby setup/scripts/validate-starter-kit.rb` for the complete local release suite. Human setup, hosted recovery, schedules, and environment support require separate acceptance evidence.
-
-Software uses [MIT](setup/legal/LICENSE-CODE); documentation, skills, and templates use [CC BY 4.0](setup/legal/LICENSE-CONTENT). [LICENSE](LICENSE) explains attribution and marks.
+The old releases remain historical Git references, not the setup route. This template uses the [MIT license](LICENSE). Maintainer scripts, repository history, and `.github/` are not installed into personal workspaces.

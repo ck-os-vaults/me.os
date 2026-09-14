@@ -1,19 +1,17 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
 authority: reference
 source: ai
 ---
 
-# projects
+# Projects
 
-**Bottom line:** Active personal work has one project owner. A new project begins with one home file.
+[← Life map](../knowledge-map.md)
 
-**When to read this:** Read when routing personal work or reviewing active projects.
+Give each actual personal project its own folder. Keep its current outcome, state, next actions, and supporting files together. Add links here when projects exist.
 
-Create a project only when real ongoing work or a retained project asset exists. Add local rules, decisions, memory, or supporting folders only when that project genuinely needs them.
-
-Use `ruby ../os/scripts/add-project.rb <lowercase-kebab-name>` from `life/`, or `ruby os/scripts/add-project.rb <name>` from the vault root.
+Project AGENTS.md files contain only project-specific instructions and a link to [shared OS guidance](../../os/AGENTS.md). Use an existing project document for status unless a separate status file makes it easier to use. Business work belongs with its business.

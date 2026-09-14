@@ -1,21 +1,14 @@
----
-type: map
-created: 2026-08-11
-updated: 2026-09-12
-reviewed: 2026-09-12
-status: living
-authority: reference
-source: ai
----
+# Skills
 
-# skills
+[← Knowledge map](../knowledge-map.md)
 
-**Bottom line:** Portable Markdown routines for repeated work. The registry in `../skill-map.md` decides when to open one; supplied routines remain inactive until the trigger is real.
+Add a skill when a reusable workflow is actually needed. Normal memory and file organization already live in [retrieval](../retrieval.md).
 
-**When to read this:** Read when maintaining the routine library, not as general startup context.
+| Folder | What belongs here |
+|---|---|
+| `personal/` | Workflows created or adapted for the owner |
+| `vendor/` | Reviewed third-party skills, with their licenses and source information |
 
-Every reusable shared workflow must live here and be registered in `../skill-map.md` in the same change. Never leave the only copy inside one agent product or plugin. Keep business-specific methods with their business.
+Keep each skill in its own named directory with a SKILL.md. Check instructions, scripts, permissions, and dependencies before adopting outside material. Keep prerequisites explicit and credentials out of packages.
 
-Audit this folder during quarterly vault maintenance and after major agent, model, tool, or repository changes. Remove stale or unavailable-tool skills only after owner approval and verified recovery; update the workflow, registry, lifecycle dates, and any adapter together.
-
-Personal additions belong to the owner and are registered in `../owner-skills.md`. Read that registry alongside `../skill-map.md`. Both maps are owner-maintained; keep each skill registered exactly once.
+The vault holds the source. Install through the agent’s supported skill mechanism when needed and verify discovery. Prefer a supported link to the source; if copying is required, record where it was installed and keep that copy synchronized. Preserve unrelated installed skills. Do not create extra adapters or duplicate catalogs.

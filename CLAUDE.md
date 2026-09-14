@@ -1,3 +1,3 @@
-# Starter.OS agent pointer
+# Agent entry
 
-Read `AGENTS.md` and follow its public-source or private-vault route.
+Read [AGENTS.md](AGENTS.md).

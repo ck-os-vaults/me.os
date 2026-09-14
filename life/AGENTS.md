@@ -1,5 +1,10 @@
-# Life entry
+# Life instructions
 
-Read `../os/AGENTS.md` first, then use `knowledge-map.md` for personal routing.
+[← Life map](knowledge-map.md)
 
-Read `now.md` only when current personal state, priorities, planning, or a life review materially matters. Historical records never outrank current files or the owner's words in the current session.
+Use Life for personal context, projects, and records.
+
+- Apply the [OS instructions](../os/AGENTS.md); reuse them if already loaded.
+- Use the [Life map](knowledge-map.md) to find the relevant project or record.
+- Read [Now](now.md) only when personal state, priorities, planning, or a Life review matters.
+- Historical records never override current files or the owner’s words in the session.

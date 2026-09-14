@@ -1,17 +1,17 @@
 ---
 type: decision-log
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
 authority: canon
 source: ai
 ---
 
-# personal decisions
+# Decisions
 
-**Bottom line:** Append only durable personal decisions the owner explicitly confirms.
+[← Records](readme.md)
 
-**When to read this:** Read when current personal work depends on earlier reasoning or when recording a confirmed decision.
+Confirmed personal and shared workspace decisions. Add the date, decision, reason, source context, and any superseded decision. Preserve earlier entries and update the owning current document too.
 
-Business decisions belong to their business. Suggestions and agent inferences are not decisions.
+No decisions recorded yet.

@@ -1,20 +1,24 @@
 ---
 type: map
-created: 2026-08-29
-updated: 2026-08-29
-reviewed: 2026-08-29
+created: SETUP_DATE
+updated: SETUP_DATE
+reviewed: SETUP_DATE
 status: living
 authority: reference
 source: ai
 ---
 
-# records
+# Records
 
-**Bottom line:** Records preserve chronology and explicitly confirmed decisions; they do not become current truth automatically.
+[← Life map](../knowledge-map.md)
 
-**When to read this:** Read before creating or interpreting a personal historical record.
+Daily continuity and confirmed decisions. Current facts and actions belong in Now, Wiki, or their owning project.
 
-- `decisions.md` is append-only durable decision history.
-- Create `daily/` only if the owner actually uses daily records.
-- Create another record stream only after a real recurring need is proven.
-- Temporary handoffs belong in the project they serve and should be absorbed or removed when closed and Git-recoverable.
+| Home | Purpose |
+|---|---|
+| `daily/YYYY-MM-DD.md` | Useful progress and where to resume, one note per active day |
+| [Decisions](decisions.md) | Confirmed personal and shared workspace decisions, with date and reason |
+
+Follow [daily continuity](../../os/retrieval.md#daily-continuity) during normal meaningful work. Read before appending, avoid duplicates, and preserve earlier entries. No idle-day filler or scheduled job is required.
+
+Business decisions remain with their business. Daily filenames are their index; do not list every note here.
