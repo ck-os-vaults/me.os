@@ -28,6 +28,8 @@ The workspace root and `biz/` are plain containers. Each listed repository has i
 
 ## Repository inventory
 
+Record the actual local workspace root here during setup; repository paths below are relative to it.
+
 | Path | Private remote | State |
 |---|---|---|
 | `os/` | Set during setup | Not verified |
@@ -54,3 +56,9 @@ Use lowercase kebab-case paths and date-named daily notes. Keep useful content i
 Clone the private repositories into the recorded paths, restore separately backed-up files, and verify the links, latest commits, and actual project checks before resuming work. Preserve unpublished work before any restore or sync. Investigate divergent history instead of overwriting it.
 
 Git does not back up uncommitted or unpushed changes, ignored attachments, root entry files, app settings, or credentials. Record the actual separate backup method in [integrations](integrations.md); mark missing protection honestly.
+
+### Root entry files
+
+The plain workspace root is outside the individual repositories. After restoring them, recreate a standard root AGENTS.md with: “Use os/AGENTS.md for shared instructions and the relevant project AGENTS.md for local context.” If Claude is used, recreate CLAUDE.md containing `@AGENTS.md`. A standard root README can link to `os/knowledge-map.md`, `life/knowledge-map.md`, and `biz/readme.md`.
+
+These directions recover only the standard entry files. Keep customized root content in the existing separate backup and record its verified destination here. Restore customizations before resuming work; do not replace them with the standard text. If protection is incomplete, say exactly what is missing.

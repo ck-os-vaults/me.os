@@ -54,8 +54,8 @@ def validate(root, workspace=False):
                 if token in text: errors.append(f'{rel}: unresolved {token}')
         historical = bool(re.match(r'\d{4}-\d{2}-\d{2}', f.name)) or f.name == 'decisions.md'
         if not historical and rel.startswith(('os/', 'life/')):
-            if re.search(r'/Users/|Starter\.OS|me\.os', text, re.I):
-                errors.append(f'{rel}: personal/source branding')
+            if re.search(r'Starter\.OS|me\.os', text, re.I):
+                errors.append(f'{rel}: source-product branding')
         front = re.match(r'---\n(.*?)\n---\n', text, re.S)
         if front:
             for key in ('created', 'updated', 'reviewed'):

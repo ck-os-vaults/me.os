@@ -51,8 +51,17 @@ class TemplateChecks(unittest.TestCase):
         self.assertEqual(original,(project/'garden.md').read_bytes())
         self.assertEqual(original,(backup/'old-notes/garden.md').read_bytes())
         self.assertEqual([],validate(self.root,True))
-    def test_personal_data_fails(self):
-        with (self.root/'os/AGENTS.md').open('a') as f: f.write('/Users/example/private\n')
-        self.assertTrue(any('branding' in x for x in validate(self.root,True)))
+    def test_local_workspace_paths_and_remotes_are_allowed(self):
+        with (self.root/'os/vault-map.md').open('a') as f:
+            f.write('\nLocal root: `/Users/morgan/Work`\nRemote: https://github.com/example/private-os\n')
+        self.assertEqual([], validate(self.root, True))
+    def test_source_branding_still_fails(self):
+        for brand in ('Starter.OS', 'me.os'):
+            with self.subTest(brand=brand):
+                target = self.root/'os/AGENTS.md'
+                original = target.read_text()
+                target.write_text(original + brand + '\n')
+                self.assertTrue(any('source-product branding' in x for x in validate(self.root, True)))
+                target.write_text(original)
 
 if __name__ == '__main__': unittest.main()

@@ -20,7 +20,7 @@ Source authority, note metadata, and preservation of historical records.
 - Prefer current material over superseded material and follow `superseded_by`, then use the owning project's source hierarchy.
 - Use an approved `spec` for implementation and `canon` for settled principles. `reference` and `exploratory` are supporting material; metadata labels alone do not establish approval.
 - For the same fact and scope, prefer the newer supported account. `updated` and `created` establish chronology, not evidence; `reviewed` records a review, not a decision.
-- For otherwise equal accounts of the owner's intent, prefer his own words.
+- For otherwise equal accounts of the owner's intent, prefer the owner’s own words.
 - Surface unresolved material conflicts. Links aid navigation; they do not establish authority.
 
 ## Metadata
