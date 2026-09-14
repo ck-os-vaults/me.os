@@ -21,7 +21,12 @@ class TemplateChecks(unittest.TestCase):
             for old, new in replacements.items(): text = text.replace(old,new)
             f.write_text(text)
     def tearDown(self): self.tmp.cleanup()
-    def test_source(self): self.assertEqual([], validate(SOURCE, not (SOURCE/'SETUP.md').exists()))
+    def test_source(self): self.assertEqual([], validate(SOURCE, not (SOURCE.parent/'SETUP.md').exists()))
+    def test_repository_wrapper(self):
+        if (SOURCE.parent/'SETUP.md').exists():
+            self.assertEqual([], validate(SOURCE.parent))
+            self.assertFalse((SOURCE/'SETUP.md').exists())
+            self.assertFalse((SOURCE/'LICENSE').exists())
     def test_personalized_workspace(self): self.assertEqual([], validate(self.root, True))
     def test_unresolved_context_fails(self):
         with (self.root/'os/AGENTS.md').open('a') as f: f.write('OWNER_NAME\n')

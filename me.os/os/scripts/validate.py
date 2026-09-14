@@ -30,16 +30,25 @@ def anchors(text):
 
 def validate(root, workspace=False):
     root = Path(root).resolve()
+    distribution = None
+    if not workspace:
+        distribution = root if (root / 'me.os').is_dir() else root.parent
+        root = distribution / 'me.os'
     errors = []
-    for name in REQUIRED + (() if workspace else ('SETUP.md', 'readme.md', 'LICENSE')):
+    if distribution:
+        for name in ('SETUP.md', 'readme.md', 'LICENSE'):
+            if not (distribution / name).is_file(): errors.append(f'Missing wrapper {name}')
+    for name in REQUIRED:
         if not (root / name).exists(): errors.append(f'Missing {name}')
     for name in RETIRED:
         if (root / name).exists(): errors.append(f'Retired path: {name}')
-    for f in root.rglob('*.md'):
+    files = list(root.rglob('*.md'))
+    if distribution: files += list(distribution.glob('*.md'))
+    for f in files:
         if any(x in f.parts for x in ('.git', '.github', 'node_modules', '.venv')): continue
         if 'vendor' in f.parts: continue
         text = f.read_text()
-        rel = str(f.relative_to(root))
+        rel = str(f.relative_to(root)) if root in f.parents else "wrapper/" + f.name
         if workspace and (rel.startswith(('os/', 'life/')) or rel == 'AGENTS.md'):
             for token in TOKENS:
                 if token in text: errors.append(f'{rel}: unresolved {token}')

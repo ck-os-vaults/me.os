@@ -8,6 +8,23 @@ Give your agent this link and say:
 
 [SETUP.md](SETUP.md) is the complete setup workflow. Use an agent that can read the repository, edit your files, and run Git. It will use what you already have, ask a few questions, and organize your own private workspace.
 
+## What you copy
+
+Copy the contents of [me.os/](me.os/) into your own named workspace. The repository wrapper holds the setup instructions and license; it is not part of your personal vault.
+
+```text
+repository/
+├── SETUP.md
+├── LICENSE
+├── readme.md
+└── me.os/
+    ├── AGENTS.md
+    ├── CLAUDE.md
+    ├── os/
+    ├── life/
+    └── biz/
+```
+
 ## What you get
 
 | Home | Purpose |
@@ -26,6 +43,6 @@ Improvements here benefit new setups. Existing users can ask their agent to adop
 
 ## Maintaining this template
 
-Edit the universal files and the single setup workflow. Run `python3 os/scripts/validate.py` and `python3 os/scripts/test_template.py` before publishing. These checks validate the template and a synthetic personalized fixture; they do not establish that every agent or computer can complete setup.
+Edit the universal files and the single setup workflow. Run `python3 me.os/os/scripts/validate.py` and `python3 me.os/os/scripts/test_template.py` before publishing. These checks validate the template and a synthetic personalized fixture; they do not establish that every agent or computer can complete setup.
 
 The old releases remain historical Git references, not the setup route. This template uses the [MIT license](LICENSE). Repository history and `.github/` are not installed into personal workspaces.
