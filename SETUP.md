@@ -1,8 +1,28 @@
-# Set up your personal workspace
+# Set up or improve your personal workspace
 
-This is the complete setup workflow. Use the current `main` version of this repository as a model. The owner’s request to perform setup authorizes the routine file creation, personalization, organization, and private Git setup below. An inspection-only request does not.
+This file covers fresh setup and improvements to an existing workspace. Use the current `main` version of this repository as a model. The owner’s request to perform setup authorizes the routine file creation, personalization, organization, and private Git setup below. An inspection-only request does not.
 
 Work through to a usable workspace. Use sensible defaults, keep explanations short, and avoid repeated approvals. Ask only for essential missing information, required sign-ins, or a conflict that risks the owner’s work. Continue independent work while waiting for access.
+
+## Choose the path
+
+Inspect the owner’s workspace and read its current instructions before choosing a path. This repository is a model of structure and guidance, not authority to replace their system.
+
+- **Fresh setup:** No established personal system exists, or the owner explicitly requests a new one. Follow steps 1–5 below, preserving any existing notes brought into it.
+- **Existing workspace:** The owner wants to improve a system they already use, including an older version of this template. Follow the existing-workspace path below. Keep their established identity, files, and conventions; do not repeat the setup interview.
+
+A request to compare or recommend changes is read-only. If the intended path is unclear after inspection, ask one short question before changing files.
+
+## Improve an existing workspace
+
+1. **Compare meaning.** Read the owner’s AGENTS, retrieval guidance, maps, and other relevant OS files alongside the current template. Identify useful changes in how the agent should work—not just differences in wording or filenames. Distinguish universal guidance from personal preferences, service details, and deliberate customizations. A difference alone is not a defect.
+2. **Propose once.** Give one short proposal naming the affected files, useful behavioral improvements, and any conflicts with existing rules. Include necessary link, script, or structure changes. Preserve personal context, projects, records, integrations, skills, and repository boundaries. Their choices take precedence. Wait for approval unless they have already approved these specific changes; ask only for missing context that affects them. If no improvement is warranted, say so and finish.
+3. **Preserve and adapt.** Checkpoint affected work and verify recovery before editing. Re-read the destinations for concurrent changes. Merge approved guidance into existing files rather than copying the template over them. Add, move, or remove files only when included in the approved scope. Preserve historical bodies and original creation dates; record substantive updates with real dates. Do not clear skills, reset services, re-run personalization, or introduce template branding or version receipts.
+4. **Verify and finish.** Review the final diff against the approved proposal and the owner’s preserved instructions. Check affected links and applicable existing validators and tests. A template check that conflicts with an intentional customization is not permission to undo it. Record a brief update through the owner’s existing memory process, then commit and synchronize changed repositories using their established Git workflow and authorization. Preserve unrelated work and reconcile newer local or remote edits without force-pushing. Summarize what changed and anything unfinished.
+
+This completes the existing-workspace path. Do not continue into fresh setup. No upstream synchronization, release tracking, or automatic updater is required.
+
+## Fresh setup
 
 ## 1. Look, then ask once
 

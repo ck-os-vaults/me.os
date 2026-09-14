@@ -6,11 +6,11 @@ Give your agent this link and say:
 
 > Read https://github.com/ck-os-vaults/me.os, find SETUP.md, and set up my personal workspace. Ask me the short interview together, then handle the rest.
 
-[SETUP.md](SETUP.md) is the complete setup workflow. Use an agent that can read the repository, edit your files, and run Git. It will use what you already have, ask a few questions, and organize your own private workspace.
+[SETUP.md](SETUP.md) covers both fresh setup and improvements to an existing workspace. Use an agent that can read the repository, edit your files, and run Git. For a fresh setup, it asks a short interview and organizes your private workspace. For an existing system, it compares the instructions and proposes useful changes while preserving your context and customizations.
 
 ## What you copy
 
-Copy the contents of [me.os/](me.os/) into your own named workspace. The repository wrapper holds the setup instructions and license; it is not part of your personal vault.
+For a fresh setup, copy the contents of [me.os/](me.os/) into your own named workspace. The repository wrapper holds the setup instructions and license; it is not part of your personal vault.
 
 ```text
 repository/
@@ -39,7 +39,11 @@ The finished workspace uses your name and context. No product account, paid lice
 
 Work with your agent normally. It maintains current context and useful daily records as you work. You own the files and can change the structure and instructions.
 
-Improvements here benefit new setups. Existing users can ask their agent to adopt a specific improvement; there is no automatic updater or template sync.
+To improve an existing system later, give your agent the repository link and say:
+
+> Read SETUP.md and use its existing-workspace path to compare your latest guidance with my system. Propose useful improvements while preserving my context and customizations.
+
+The agent adapts agreed changes into your files. There is no automatic updater or template sync.
 
 ## Maintaining this template
 
