@@ -10,11 +10,11 @@ Briefly play back the requested outcome. Read the template’s `os/AGENTS.md`, `
 
 Ask the unanswered questions together in one short interview; reuse answers already in the conversation:
 
-- What should I call you, what should we name your workspace, and what time zone do you use?
+- What should I call you, and what should we name your workspace?
 - What few things about you and how you like to work should your agent know? What are your main current personal projects or businesses?
 - Where are your existing notes or workspace, and which services or subscriptions should this system use? May I use your signed-in GitHub account for private backups, or do you prefer another arrangement?
 
-Suggest a personal workspace name based on their name, a suitable local location, and private GitHub backups. Do not require technical choices. The owner may skip optional context. Use the confirmed local time zone or ask if it cannot be established. Do not invent identity, diagnoses, priorities, accounts, or service access.
+Suggest a personal workspace name based on their name, a suitable local location, and private GitHub backups. Do not require technical choices. The owner may skip optional context. Do not invent identity, diagnoses, priorities, accounts, or service access.
 
 Done when the destination, minimal identity, and backup preference are known. If the environment cannot edit the owner’s files or use Git, explain the precise missing capability and how to resume; never claim setup was completed elsewhere.
 
@@ -32,7 +32,7 @@ Done when the original work is recoverable and every existing file affected by s
 
 Copy only the template’s `os/` and `life/` content into the private workspace. Keep the public clone separate. Do not copy public Git history, root template instructions, README, this setup file, maintainer scripts, `.github/`, or upstream remotes into the owner’s system.
 
-- Replace `OWNER_NAME`, `WORKSPACE_NAME`, `TIME_ZONE`, and `SETUP_DATE` with confirmed values and the actual setup date. On a new file, set creation/update/review dates to that day; preserve original dates and record bodies on existing files.
+- Replace `OWNER_NAME`, `WORKSPACE_NAME`, and `SETUP_DATE` with confirmed values and the actual setup date. On a new file, set creation/update/review dates to that day; preserve original dates and record bodies on existing files.
 - Adapt the few personal lines in `os/AGENTS.md`; keep its universal collaboration and memory guidance unless the owner prefers otherwise. Put deeper background in `life/wiki/owner.md`, optionally renaming it and updating its links.
 - Populate `life/now.md` with confirmed current priorities and links. Put project details in their project homes. Remove unused placeholder prose and blank example rows.
 - Keep the existing OS file set. Add only the person’s needed context to those files; do not add manuals, recovery documents, release receipts, separate “me” files, or organizational scaffolding.

@@ -11,7 +11,7 @@ REQUIRED = ('AGENTS.md', 'os/AGENTS.md', 'os/CLAUDE.md', 'os/knowledge-map.md',
             'life/AGENTS.md', 'life/knowledge-map.md', 'life/now.md', 'life/wiki',
             'life/projects/readme.md', 'life/documents/readme.md',
             'life/records/readme.md', 'life/records/decisions.md', 'life/records/daily')
-TOKENS = ('OWNER_NAME', 'WORKSPACE_NAME', 'TIME_ZONE', 'SETUP_DATE')
+TOKENS = ('OWNER_NAME', 'WORKSPACE_NAME', 'SETUP_DATE')
 RETIRED = ('os/me.md', 'os/recovery.md', 'os/manual.md', 'os/release.json',
            'os/skill-map.md', 'os/starter-os.md', 'os/templates', 'os/owner-skills.md')
 

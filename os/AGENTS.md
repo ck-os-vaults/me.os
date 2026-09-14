@@ -12,8 +12,6 @@ WORKSPACE_NAME is my workspace for personal context, projects, and reusable skil
 
 - Workspace name: WORKSPACE_NAME.
 
-- Time zone: TIME_ZONE.
-
 - Add only confirmed personal context and preferences that help everyday collaboration.
 
 ## Working together

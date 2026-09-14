@@ -15,7 +15,7 @@ class TemplateChecks(unittest.TestCase):
         for area in ('os', 'life'): shutil.copytree(SOURCE / area, self.root / area)
         (self.root / 'AGENTS.md').write_text('Use [shared instructions](os/AGENTS.md).\n')
         replacements = {'OWNER_NAME':'Morgan', 'WORKSPACE_NAME':'Morgan workspace',
-                        'TIME_ZONE':'Europe/London', 'SETUP_DATE':'2026-09-13'}
+                        'SETUP_DATE':'2026-09-13'}
         for f in self.root.rglob('*.md'):
             text = f.read_text()
             for old, new in replacements.items(): text = text.replace(old,new)
