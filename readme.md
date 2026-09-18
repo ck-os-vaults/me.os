@@ -19,7 +19,6 @@ repository/
 ├── readme.md
 └── me.os/
     ├── AGENTS.md
-    ├── CLAUDE.md
     ├── os/
     ├── life/
     └── biz/
@@ -34,6 +33,8 @@ repository/
 | `biz/` | Separate business work |
 
 The finished workspace uses your name and context. No product account, paid license, update subscription, or connection back to this repository is required. Your AI and other services may have their own costs.
+
+Agent instructions use `AGENTS.md`. For Claude Code, use version 2.1.277 or later with AGENTS.md support enabled in `/config`; see the [support announcement](https://x.com/trq212/status/2101009392611278961).
 
 ## After setup
 

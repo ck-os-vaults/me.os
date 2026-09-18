@@ -59,6 +59,6 @@ Git does not back up uncommitted or unpushed changes, ignored attachments, root 
 
 ### Root entry files
 
-The plain workspace root is outside the individual repositories. After restoring them, recreate a standard root AGENTS.md with: “Use os/AGENTS.md for shared instructions and the relevant project AGENTS.md for local context.” If Claude is used, recreate CLAUDE.md containing `@AGENTS.md`. A standard root README can link to `os/knowledge-map.md`, `life/knowledge-map.md`, and `biz/readme.md`.
+The plain workspace root is outside the individual repositories. After restoring them, recreate a standard root AGENTS.md with: “Use os/AGENTS.md for shared instructions and the relevant project AGENTS.md for local context.” A standard root README can link to `os/knowledge-map.md`, `life/knowledge-map.md`, and `biz/readme.md`.
 
 These directions recover only the standard entry files. Keep customized root content in the existing separate backup and record its verified destination here. Restore customizations before resuming work; do not replace them with the standard text. If protection is incomplete, say exactly what is missing.

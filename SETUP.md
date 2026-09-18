@@ -64,7 +64,7 @@ Copy the contents of `me.os/` into the private workspace, named for its owner. A
 - Retain the compact tables, narrow Mermaid diagrams, meaningful headings, and relative Markdown links. Add real project/business links to the maps.
 - Skills start empty. Keep `personal/` for owner workflows and `vendor/` for reviewed third-party packages. Install only skills the owner actually needs, using the agent’s supported method. Retain third-party notices and verify discovery before claiming an installation.
 
-Keep the included minimal workspace-root `AGENTS.md` pointing to `os/AGENTS.md` and the relevant project instructions. Keep root `CLAUDE.md` pointing to that entry if the owner’s agent uses it. These belong to the owner; neither entry routes back to this template.
+Keep the included minimal workspace-root `AGENTS.md` pointing to `os/AGENTS.md` and the relevant project instructions. This entry belongs to the owner and does not route back to this template.
 
 Use the owner’s chosen identity throughout. No me.os or Starter.OS branding, attribution paragraphs, updater, or product dependency belongs in operating documents. Keep the source LICENSE with the setup materials outside the active workspace. Preserve applicable license notices when redistributing copied material, and keep third-party licenses with their packages. Legal notices do not belong in agent startup instructions.
 
@@ -78,7 +78,7 @@ For a new workspace with private GitHub approved, use independent `os`, `life`, 
 
 Preserve an existing suitable private host or the owner’s explicit deferral. Add appropriate ignores for credentials, temporary exports, dependencies, and local app state; inspect the actual staged files before publication. Never silently exclude unique personal content and then claim it is backed up. Record actual repository paths and remotes in `os/vault-map.md`.
 
-For files outside Git, use an existing supported backup arrangement or record the gap. In `os/vault-map.md`, record the actual local workspace root and how to restore the root AGENTS.md, optional CLAUDE.md, and README. Standard entry files can be recreated using the instructions in that map; preserve any customized root content in a verified separate backup and record its destination. Do not call customized root files protected without a verified copy. Do not invent backup health or purchase a backup service. Synchronize eligible changes to private `main` without force-pushing. Reconcile newer remote work before pushing.
+For files outside Git, use an existing supported backup arrangement or record the gap. In `os/vault-map.md`, record the actual local workspace root and how to restore the root AGENTS.md and README. Standard entry files can be recreated using the instructions in that map; preserve any customized root content in a verified separate backup and record its destination. Do not call customized root files protected without a verified copy. Do not invent backup health or purchase a backup service. Synchronize eligible changes to private `main` without force-pushing. Reconcile newer remote work before pushing.
 
 Done when configured services and backup destinations are accurately recorded, and each eligible private repository has a verified published commit—or an explicit access/owner deferral is recorded.
 

@@ -6,7 +6,7 @@ import datetime
 import re
 from urllib.parse import unquote
 
-REQUIRED = ('AGENTS.md', 'os/AGENTS.md', 'os/CLAUDE.md', 'os/knowledge-map.md',
+REQUIRED = ('AGENTS.md', 'os/AGENTS.md', 'os/knowledge-map.md',
             'os/retrieval.md', 'os/vault-map.md', 'os/integrations.md', 'os/skills/readme.md',
             'life/AGENTS.md', 'life/knowledge-map.md', 'life/now.md', 'life/wiki',
             'life/projects/readme.md', 'life/documents/readme.md',
